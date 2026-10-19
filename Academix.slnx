@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="Academix.Data.Models/Academix.Data.Models.csproj" />
+  <Project Path="Academix.Data/Academix.Data.csproj" />
+  <Project Path="Academix.GCommon/Academix.GCommon.csproj" />
+  <Project Path="Academix.Serices.Core/Academix.Serices.Core.csproj" />
+  <Project Path="Academix.Web.ViewModels/Academix.Web.ViewModels.csproj" />
+  <Project Path="Academix.Web/Academix.Web.csproj" />
+</Solution>
