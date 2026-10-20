@@ -8,7 +8,6 @@ namespace Academix.GCommon.DomainValidation
             public const int SubjectNameMinLength = 2;
             public const int SubjectNameMaxLength = 100;
 
-            public const int SubjectDescriptionMinLength = 5;
             public const int SubjectDescriptionMaxLength = 500;
         }
         public static class StudyTask
