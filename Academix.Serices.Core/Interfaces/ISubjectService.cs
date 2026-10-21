@@ -20,5 +20,13 @@
         Task<bool> DeleteSubjectAsync(
             int subjectId,
             string userId);
+
+        Task<IEnumerable<SubjectViewModel>> GetCatalogSubjectsAsync(string? userId);
+
+        Task<IEnumerable<SubjectViewModel>> GetMySubjectsAsync(string userId);
+
+        Task<bool> AddSubjectToUserAsync(
+            int subjectId,
+            string userId);
     }
 }

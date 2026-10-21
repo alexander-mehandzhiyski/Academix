@@ -6,7 +6,7 @@ namespace Academix.Web.ViewModels.Subject
     public class SubjectInputModel
     {
         [Required]
-        [MaxLength(SubjectNameMaxLength)]
+        [StringLength(SubjectNameMaxLength, MinimumLength = SubjectNameMinLength)]
         public string Name { get; set; } = null!;
 
         [MaxLength(SubjectDescriptionMaxLength)]

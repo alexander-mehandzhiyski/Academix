@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Academix.Web.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDatabaseSchemaAndSeedData : Migration
+    public partial class DatabaseSchemaAndSeedData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,17 +20,11 @@ namespace Academix.Web.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Subjects", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Subjects_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -40,8 +34,8 @@ namespace Academix.Web.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Grade = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    ExamDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Grade = table.Column<decimal>(type: "decimal(4,2)", nullable: true),
+                    ExamDate = table.Column<DateTime>(type: "smalldatetime", nullable: false),
                     SubjectId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -63,7 +57,7 @@ namespace Academix.Web.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "smalldatetime", nullable: false),
                     IsCompleted = table.Column<bool>(type: "bit", nullable: false),
                     SubjectId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -78,13 +72,37 @@ namespace Academix.Web.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UsersSubjects",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SubjectId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsersSubjects", x => new { x.UserId, x.SubjectId });
+                    table.ForeignKey(
+                        name: "FK_UsersSubjects_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UsersSubjects_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Subjects",
-                columns: new[] { "Id", "Description", "Name", "UserId" },
+                columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Algebra, calculus and geometry", "Mathematics", null },
-                    { 2, "World and regional history", "History", null }
+                    { 1, "Algebra, calculus and geometry", "Mathematics" },
+                    { 2, "World and regional history", "History" }
                 });
 
             migrationBuilder.InsertData(
@@ -92,8 +110,8 @@ namespace Academix.Web.Data.Migrations
                 columns: new[] { "Id", "ExamDate", "Grade", "SubjectId", "Title" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2026, 11, 18, 18, 11, 32, 910, DateTimeKind.Utc).AddTicks(7846), null, 1, "Midterm Mathematics" },
-                    { 2, new DateTime(2026, 12, 18, 18, 11, 32, 910, DateTimeKind.Utc).AddTicks(9903), null, 2, "Final History" }
+                    { 1, new DateTime(2026, 11, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 1, "Midterm Mathematics" },
+                    { 2, new DateTime(2026, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 2, "Final History" }
                 });
 
             migrationBuilder.InsertData(
@@ -101,9 +119,9 @@ namespace Academix.Web.Data.Migrations
                 columns: new[] { "Id", "Description", "DueDate", "IsCompleted", "SubjectId", "Title" },
                 values: new object[,]
                 {
-                    { 1, "Introduction to algebra", new DateTime(2026, 10, 25, 18, 11, 32, 909, DateTimeKind.Utc).AddTicks(4056), false, 1, "Read Chapter 1" },
-                    { 2, "Solve exercises 1-10", new DateTime(2026, 10, 28, 18, 11, 32, 909, DateTimeKind.Utc).AddTicks(7081), false, 1, "Practice problems" },
-                    { 3, "Focus on timeline and key events", new DateTime(2026, 10, 23, 18, 11, 32, 909, DateTimeKind.Utc).AddTicks(7095), false, 2, "Read about WW2" }
+                    { 1, "Introduction to algebra", new DateTime(2026, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 1, "Read Chapter 1" },
+                    { 2, "Solve exercises 1-10", new DateTime(2026, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 1, "Practice problems" },
+                    { 3, "Focus on timeline and key events", new DateTime(2026, 10, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 2, "Read about WW2" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -117,9 +135,9 @@ namespace Academix.Web.Data.Migrations
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subjects_UserId",
-                table: "Subjects",
-                column: "UserId");
+                name: "IX_UsersSubjects_SubjectId",
+                table: "UsersSubjects",
+                column: "SubjectId");
         }
 
         /// <inheritdoc />
@@ -130,6 +148,9 @@ namespace Academix.Web.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "StudyTasks");
+
+            migrationBuilder.DropTable(
+                name: "UsersSubjects");
 
             migrationBuilder.DropTable(
                 name: "Subjects");

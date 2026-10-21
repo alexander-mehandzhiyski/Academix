@@ -1,8 +1,80 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<section class="mb-5 py-5">
+    <div class="row align-items-end mb-5">
+        <div class="col-lg-7">
+            <div class="ax-section-label mb-3">
+                YOUR STUDY JOURNEY
+            </div>
+            <h2 class="display-5 fw-bold mb-3">
+                Turn your goals<br />
+                into a routine.
+            </h2>
+            <p class="text-secondary mb-0" style="max-width: 520px;">
+                A good study routine starts with a simple plan.
+                Academix helps you organize each step.
+            </p>
+        </div>
+    </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="row g-0">
+        <div class="col-md-4">
+            <div class="p-4 border-top border-3"
+                 style="border-color: #4169e1 !important;">
+                <span class="small fw-bold text-primary">STEP 01</span>
+                <h3 class="h4 fw-bold mt-3">Discover</h3>
+                <p class="text-secondary">
+                    Explore the catalog and find the subjects
+                    you want to focus on.
+                </p>
+                <a asp-controller="Subjects"
+                   asp-action="Index"
+                   class="ax-text-link">
+                    Explore subjects →
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-4 border-top border-3"
+                 style="border-color: #4169e1 !important;">
+                <span class="small fw-bold text-primary">STEP 02</span>
+                <h3 class="h4 fw-bold mt-3">Build your space</h3>
+                <p class="text-secondary">
+                    Add your chosen subjects to a personal
+                    collection you can return to.
+                </p>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Subjects"
+                       asp-action="MySubjects"
+                       class="ax-text-link">
+                        Open my subjects →
+                    </a>
+                }
+                else
+                {
+                    <a asp-area="Identity"
+                       asp-page="/Account/Register"
+                       class="ax-text-link">
+                        Create an account →
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-4 border-top border-3"
+                 style="border-color: #4169e1 !important;">
+                <span class="small fw-bold text-primary">STEP 03</span>
+                <h3 class="h4 fw-bold mt-3">Stay organized</h3>
+                <p class="text-secondary">
+                    Build your study workflow around your
+                    subjects and the tasks you need to complete.
+                </p>
+                <span class="small text-secondary">
+                    Your next step starts here.
+                </span>
+            </div>
+        </div>
+    </div>
+</section>

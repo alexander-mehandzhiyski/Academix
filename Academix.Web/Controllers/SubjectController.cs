@@ -20,17 +20,34 @@ namespace Academix.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            string userId = GetUserId();
+            string? userId = GetUserId(); 
 
-            IEnumerable<SubjectViewModel> subjects = await subjectService.GetAllSubjectsAsync(userId);
+            var subject = await subjectService.GetCatalogSubjectsAsync(userId);
 
-            return View(subjects);
+            return View(subject);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(SubjectInputModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(inputModel);
+            }
+            string userId = GetUserId();
+            bool isCreated = await subjectService.CreateSubjectAsync(inputModel, userId);
+            if (!isCreated)
+            {
+                ModelState.AddModelError(string.Empty, "Failed to create subject.");
+                return View(inputModel);
+            }
+            return RedirectToAction(nameof(Index));
         }
         private string GetUserId()
         {

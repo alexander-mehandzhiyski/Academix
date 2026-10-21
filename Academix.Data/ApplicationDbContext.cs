@@ -17,6 +17,8 @@ namespace Academix.Data
 
         public virtual DbSet<StudyTask> StudyTasks { get; set; } = null!;
 
+        public virtual DbSet<UserSubject> UsersSubjects { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

@@ -15,30 +15,11 @@ namespace Academix.Serices.Core
         }
         public async Task<IEnumerable<SubjectViewModel>> GetAllSubjectsAsync(string userId)
         {
-            return await dbContext.Subjects
-                .Where(s => s.UserId == userId)
-                .Select(s => new SubjectViewModel
-                {
-                    Name = s.Name,
-                    Description = s.Description ?? string.Empty
-                })
-                .OrderBy(s => s.Name)
-                .ThenBy(s => s.Description)
-                .ToListAsync();
+            throw new NotImplementedException();
         }
         public async Task<bool> CreateSubjectAsync(SubjectInputModel model, string userId)
         {
-            Subject subject = new Subject
-            {
-                Name = model.Name,
-                Description = model.Description,
-                UserId = userId
-            };
-
-            await dbContext.Subjects.AddAsync(subject);
-            await dbContext.SaveChangesAsync();
-
-            return true;
+            throw new NotImplementedException();
         }
 
         public async Task<bool> DeleteSubjectAsync(int subjectId, string userId)
@@ -52,6 +33,33 @@ namespace Academix.Serices.Core
         }
 
         public async Task<SubjectViewModel?> GetSubjectByIdAsync(int subjectId, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<SubjectViewModel>> GetCatalogSubjectsAsync(string? userId)
+        {
+            return await dbContext.Subjects
+                .Select(s => new SubjectViewModel
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Description = s.Description ?? string.Empty,
+                    IsAdded = userId != null &&
+                        dbContext.UsersSubjects.Any(us =>
+                            us.SubjectId == s.Id &&
+                            us.UserId == userId)
+                })
+                .OrderBy(s => s.Name)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<SubjectViewModel>> GetMySubjectsAsync(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> AddSubjectToUserAsync(int subjectId, string userId)
         {
             throw new NotImplementedException();
         }

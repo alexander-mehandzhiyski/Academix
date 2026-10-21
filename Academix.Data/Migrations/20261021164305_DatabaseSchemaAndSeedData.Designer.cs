@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Academix.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261019065415_FixDateTimeFormatting")]
-    partial class FixDateTimeFormatting
+    [Migration("20261021164305_DatabaseSchemaAndSeedData")]
+    partial class DatabaseSchemaAndSeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -149,12 +149,7 @@ namespace Academix.Web.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Subjects");
 
@@ -171,6 +166,21 @@ namespace Academix.Web.Data.Migrations
                             Description = "World and regional history",
                             Name = "History"
                         });
+                });
+
+            modelBuilder.Entity("Academix.Data.Models.UserSubject", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "SubjectId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("UsersSubjects");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -397,11 +407,21 @@ namespace Academix.Web.Data.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("Academix.Data.Models.Subject", b =>
+            modelBuilder.Entity("Academix.Data.Models.UserSubject", b =>
                 {
+                    b.HasOne("Academix.Data.Models.Subject", "Subject")
+                        .WithMany("UserSubjects")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
 
                     b.Navigation("User");
                 });
@@ -460,6 +480,8 @@ namespace Academix.Web.Data.Migrations
             modelBuilder.Entity("Academix.Data.Models.Subject", b =>
                 {
                     b.Navigation("StudyTasks");
+
+                    b.Navigation("UserSubjects");
                 });
 #pragma warning restore 612, 618
         }

@@ -14,14 +14,12 @@ namespace Academix.Data.Configuration
                     Id = 1,
                     Name = "Mathematics",
                     Description = "Algebra, calculus and geometry",
-                    UserId = null
                 },
                 new Subject
                 {
                     Id = 2,
                     Name = "History",
                     Description = "World and regional history",
-                    UserId = null
                 }
             );
         }

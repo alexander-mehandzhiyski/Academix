@@ -17,12 +17,10 @@ namespace Academix.Data.Models
         [MaxLength(SubjectDescriptionMaxLength)]
         public string? Description { get; set; }
 
-        [ForeignKey(nameof(User))]
-        public string? UserId { get; set; }
-
-        public virtual IdentityUser? User { get; set; }
-
         public virtual ICollection<StudyTask> StudyTasks { get; set; }
             = new HashSet<StudyTask>();
+
+        public virtual ICollection<UserSubject> UserSubjects { get; set; }
+            = new HashSet<UserSubject>();
     }
 }
