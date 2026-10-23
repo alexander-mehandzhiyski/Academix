@@ -34,7 +34,19 @@ namespace Academix.Serices.Core
 
         public async Task<SubjectViewModel?> GetSubjectByIdAsync(int subjectId, string userId)
         {
-            throw new NotImplementedException();
+            return await dbContext.UsersSubjects
+                .Where(s=>s.SubjectId == subjectId && s.UserId == userId)
+                .Select(s=> new SubjectViewModel
+                {
+                    Id = s.Subject.Id,
+                    Name = s.Subject.Name,
+                    Description = s.Subject.Description ?? string.Empty,
+                    IsAdded = userId != null &&
+                        dbContext.UsersSubjects.Any(us =>
+                            us.SubjectId == s.SubjectId &&
+                            us.UserId == userId)
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<SubjectViewModel>> GetCatalogSubjectsAsync(string? userId)
@@ -56,12 +68,48 @@ namespace Academix.Serices.Core
 
         public async Task<IEnumerable<SubjectViewModel>> GetMySubjectsAsync(string userId)
         {
-            throw new NotImplementedException();
+            return await dbContext.UsersSubjects
+                .Include(us => us.Subject)
+                .Where(us => us.UserId == userId)
+                .Select(us => new SubjectViewModel
+                {
+                    Id = us.Subject.Id,
+                    Name = us.Subject.Name,
+                    Description = us.Subject.Description ?? string.Empty,
+                    IsAdded = true
+                })
+                .OrderBy(s => s.Name)
+                .ThenBy(s => s.Id)
+                .ToListAsync();
         }
 
-        public async Task<bool> AddSubjectToUserAsync(int subjectId, string userId)
+        public async Task<bool> AddSubjectToMySubjectsAsync(int subjectId, string userId)
         {
-            throw new NotImplementedException();
+            bool subjectExists = await dbContext.Subjects.AnyAsync(s => s.Id == subjectId);
+
+            if(!subjectExists)
+            {
+                return false;
+            }
+
+            bool isAlreadyAdded = await dbContext.UsersSubjects.AnyAsync(us => us.SubjectId == subjectId && us.UserId == userId);
+
+            if(isAlreadyAdded)
+            {
+                return false;
+            }
+
+            UserSubject userSubject = new UserSubject
+            {
+                UserId = userId,
+                SubjectId = subjectId
+            };
+
+            await dbContext.UsersSubjects.AddAsync(userSubject);
+
+            await dbContext.SaveChangesAsync();
+
+            return true;
         }
     }
 }

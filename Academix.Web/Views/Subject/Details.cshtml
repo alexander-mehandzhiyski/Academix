@@ -1,0 +1,50 @@
+﻿@model SubjectViewModel
+
+@{
+    ViewData["Title"] = "Subject Details";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="mb-0">Subject Details</h2>
+                </div>
+
+                <div class="card-body p-4">
+                    <h3 class="mb-3">@Model.Name</h3>
+
+                    <hr />
+
+                    <h5>Description</h5>
+
+                    @if (string.IsNullOrWhiteSpace(Model.Description))
+                    {
+                        <p class="text-muted">
+                            No description available.
+                        </p>
+                    }
+                    else
+                    {
+                        <p>@Model.Description</p>
+                    }
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-controller="Subject"
+                           asp-action="MySubjects"
+                           class="btn btn-outline-secondary">
+                            My Subjects
+                        </a>
+
+                        <a asp-controller="Subject"
+                           asp-action="Index"
+                           class="btn btn-primary">
+                            All Subjects
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -25,7 +25,7 @@
 
         Task<IEnumerable<SubjectViewModel>> GetMySubjectsAsync(string userId);
 
-        Task<bool> AddSubjectToUserAsync(
+        Task<bool> AddSubjectToMySubjectsAsync(
             int subjectId,
             string userId);
     }

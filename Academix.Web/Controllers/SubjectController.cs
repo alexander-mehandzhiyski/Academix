@@ -49,6 +49,60 @@ namespace Academix.Web.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> MySubjects()
+        {
+            string userId = GetUserId();
+
+            var subjects = await subjectService.GetMySubjectsAsync(userId);
+
+            return View(subjects);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToMySubjects(int subjectId)
+        {
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            bool isAdded = await subjectService.AddSubjectToMySubjectsAsync(subjectId, userId);
+
+            if(!isAdded)
+            {
+                TempData["Message"] = "Предметът не съществува или вече е добавен.";
+            }
+            else
+            {
+                TempData["Message"] = "Предметът е добавен успешно!";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details([FromRoute] int id)
+        {
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var subject = await subjectService.GetSubjectByIdAsync(id, userId);
+
+            if(subject == null)
+            {
+                return NotFound();
+            }
+
+            return View(subject);
+        }
         private string GetUserId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier)!;

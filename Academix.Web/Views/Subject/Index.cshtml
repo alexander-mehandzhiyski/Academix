@@ -1,7 +1,14 @@
-﻿@model IEnumerable<Academix.Web.ViewModels.Subject.SubjectViewModel>
+﻿@model IEnumerable<SubjectViewModel>
 
 @{
     ViewData["Title"] = "All Subjects";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["Message"]
+    </div>
 }
 
 <div class="container mt-4">
@@ -40,8 +47,8 @@
                             }
                             else
                             {
-                                <form asp-action="Add"
-                                      asp-route-id="@subject.Id"
+                                <form asp-action="AddToMySubjects"
+                                      asp-route-subjectId="@subject.Id"
                                       method="post">
                                     @Html.AntiForgeryToken()
 
