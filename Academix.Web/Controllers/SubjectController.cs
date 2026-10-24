@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace Academix.Web.Controllers
 {
     [Authorize]
-    public class SubjectController : Controller
+    public class SubjectController : BaseController
     {
         private readonly ISubjectService subjectService;
 
@@ -28,32 +28,14 @@ namespace Academix.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(SubjectInputModel inputModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(inputModel);
-            }
-            string userId = GetUserId();
-            bool isCreated = await subjectService.CreateSubjectAsync(inputModel, userId);
-            if (!isCreated)
-            {
-                ModelState.AddModelError(string.Empty, "Failed to create subject.");
-                return View(inputModel);
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
         public async Task<IActionResult> MySubjects()
         {
-            string userId = GetUserId();
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
 
             var subjects = await subjectService.GetMySubjectsAsync(userId);
 
@@ -102,10 +84,6 @@ namespace Academix.Web.Controllers
             }
 
             return View(subject);
-        }
-        private string GetUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         }
     }
 }

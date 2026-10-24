@@ -8,69 +8,57 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="fw-bold">My Subjects</h1>
-            <p class="text-muted mb-0">
-                Manage the subjects you are studying.
-            </p>
+            <p class="text-muted">Your selected subjects.</p>
         </div>
 
         <a asp-controller="Subject"
            asp-action="Index"
            class="btn btn-primary">
-            + Explore Subjects
+            Explore Subjects
         </a>
     </div>
 
-    <hr class="mb-4" />
-
-    @if (Model == null || !Model.Any())
+    @if (!Model.Any())
     {
         <div class="text-center py-5">
             <h3>No subjects yet</h3>
             <p class="text-muted">
-                You haven't added any subjects to your list.
+                Add subjects from the catalog to see them here.
             </p>
 
             <a asp-controller="Subject"
                asp-action="Index"
-               class="btn btn-primary mt-2">
-                Browse All Subjects
+               class="btn btn-primary">
+                Browse Subjects
             </a>
         </div>
     }
     else
     {
-        <div class="row g-4">
-            @foreach (SubjectViewModel subject in Model)
+        <div class="list-group">
+            @foreach (var subject in Model)
             {
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-body p-4">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <h4 class="card-title fw-semibold">
-                                    @subject.Name
-                                </h4>
+                <div class="list-group-item d-flex justify-content-between align-items-center p-3">
+                    <h5 class="mb-0">@subject.Name</h5>
 
-                                <span class="badge bg-success">
-                                    Added
-                                </span>
-                            </div>
-
-                            <p class="card-text text-muted">
-                                @(string.IsNullOrWhiteSpace(subject.Description)
-                                    ? "No description available."
-                                    : subject.Description)
-                            </p>
-
-                            <hr />
-
-                            <a asp-controller="Subject"
-                               asp-action="Details"
-                               asp-route-id="@subject.Id"
-                               class="btn btn-outline-primary w-100">
-                                View Details
-                            </a>
-                        </div>
-                    </div>
+                    <a asp-controller="Subject"
+                       asp-action="Details"
+                       asp-route-id="@subject.Id"
+                       class="btn btn-outline-primary">
+                        View Details
+                    </a>
+                    <a asp-controller="StudyTask"
+                       asp-action="Create"
+                       asp-route-subjectId="@subject.Id"
+                       class="btn btn-primary">
+                        Create Task
+                    </a>
+                    <a asp-controller="StudyTask"
+                       asp-action="TasksOfSubject"
+                       asp-route-subjectId="@subject.Id"
+                       class="btn btn-outline-primary">
+                        View Tasks
+                    </a>
                 </div>
             }
         </div>

@@ -13,24 +13,6 @@ namespace Academix.Serices.Core
         {
             this.dbContext = dbContext;
         }
-        public async Task<IEnumerable<SubjectViewModel>> GetAllSubjectsAsync(string userId)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<bool> CreateSubjectAsync(SubjectInputModel model, string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> DeleteSubjectAsync(int subjectId, string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> EditSubjectAsync(int subjectId, SubjectInputModel model, string userId)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<SubjectViewModel?> GetSubjectByIdAsync(int subjectId, string userId)
         {

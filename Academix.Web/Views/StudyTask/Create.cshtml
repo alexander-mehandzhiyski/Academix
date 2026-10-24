@@ -1,0 +1,97 @@
+﻿@model StudyTaskInputModel
+
+@{
+    ViewData["Title"] = "Create Study Task";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h1 class="fw-bold mb-2">Create Study Task</h1>
+
+                    <p class="text-muted mb-4">
+                        Add a new task to your subject.
+                    </p>
+
+                    <form asp-controller="StudyTask"
+                          asp-action="Create"
+                          method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <input type="hidden"
+                               asp-for="SubjectId" />
+
+                        <div class="mb-3">
+                            <label asp-for="Title"
+                                   class="form-label">
+                                Task Title
+                            </label>
+
+                            <input asp-for="Title"
+                                   class="form-control"
+                                   placeholder="Enter task title" />
+
+                            <span asp-validation-for="Title"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description"
+                                   class="form-label">
+                                Description
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Describe your task (optional)">
+                            </textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="DueDate"
+                                   class="form-label">
+                                Due Date
+                            </label>
+
+                            <input asp-for="DueDate"
+                                   type="datetime-local"
+                                   class="form-control" />
+
+                            <span asp-validation-for="DueDate"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-controller="Subject"
+                               asp-action="MySubjects"
+                               class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Create Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

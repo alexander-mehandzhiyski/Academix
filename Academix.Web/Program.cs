@@ -29,6 +29,7 @@ namespace Academix.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ISubjectService, SubjectService>();
+            builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();
 
             WebApplication app = builder.Build();
 
