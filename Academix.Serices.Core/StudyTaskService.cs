@@ -142,7 +142,19 @@ namespace Academix.Serices.Core
 
         public async Task<bool> SetStudyTaskCompletedAsync(int taskId, bool isCompleted, string userId)
         {
-            throw new NotImplementedException();
+            var studyTask = await dbContext.StudyTasks
+                .FirstOrDefaultAsync(st => st.Id == taskId && dbContext.UsersSubjects.Any(us => us.UserId == userId && us.SubjectId == st.SubjectId));
+
+            if(studyTask == null)
+            {
+                return false;
+            }
+
+            studyTask.IsCompleted = isCompleted;
+
+            await dbContext.SaveChangesAsync();
+
+            return true;
         }
     }
 }

@@ -31,31 +31,58 @@
                 <div class="list-group-item d-flex justify-content-between align-items-center p-3">
                     <div>
                         <h5 class="mb-1">@task.Title</h5>
+
                         <small class="text-muted">
                             Due: @task.DueDate.ToString("dd.MM.yyyy HH:mm")
                         </small>
-                    </div>
-                    <a asp-controller="StudyTask"
-                       asp-action="Edit"
-                       asp-route-taskId="@task.Id"
-                       class="btn btn-outline-primary btn-sm">
-                        Edit
-                    </a>
-                    <a asp-controller="StudyTask"
-                       asp-action="Delete"
-                       asp-route-taskId="@task.Id"
-                       class="btn btn-outline-danger btn-sm">
-                        Delete
-                    </a>
 
-                    @if (task.IsCompleted)
-                    {
-                        <span class="badge bg-success">Completed</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-warning text-dark">Pending</span>
-                    }
+                        <div class="mt-2">
+                            @if (task.IsCompleted)
+                            {
+                                <span class="badge bg-success">Completed</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 align-items-center">
+                        <form asp-controller="StudyTask"
+                              asp-action="SetCompleted"
+                              asp-route-subjectId="@task.SubjectId"
+                              method="post">
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="taskId"
+                                   value="@task.Id" />
+
+                            <input type="hidden"
+                                   name="isCompleted"
+                                   value="@(!task.IsCompleted ? "true" : "false")" />
+
+                            <button type="submit"
+                                    class="btn btn-sm @(task.IsCompleted ? "btn-outline-warning" : "btn-outline-success")">
+                                @(task.IsCompleted ? "Mark as Pending" : "Mark as Completed")
+                            </button>
+                        </form>
+
+                        <a asp-controller="StudyTask"
+                           asp-action="Edit"
+                           asp-route-taskId="@task.Id"
+                           class="btn btn-outline-primary btn-sm">
+                            Edit
+                        </a>
+
+                        <a asp-controller="StudyTask"
+                           asp-action="Delete"
+                           asp-route-taskId="@task.Id"
+                           class="btn btn-outline-danger btn-sm">
+                            Delete
+                        </a>
+                    </div>
                 </div>
             }
         </div>

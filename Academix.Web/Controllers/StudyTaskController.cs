@@ -163,5 +163,25 @@ namespace Academix.Web.Controllers
 
             return RedirectToAction("TasksOfSubject", new { subjectId });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SetCompleted(int taskId, bool isCompleted, int subjectId)
+        {
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            bool result = await studyTaskService.SetStudyTaskCompletedAsync(taskId, isCompleted, userId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction("TasksOfSubject", new { subjectId });
+        }
     }
 }
