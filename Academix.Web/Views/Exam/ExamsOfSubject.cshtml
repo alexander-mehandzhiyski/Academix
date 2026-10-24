@@ -1,0 +1,65 @@
+﻿@model IEnumerable<ExamViewModel>
+
+@{
+    ViewData["Title"] = "Exams";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold">Exams</h1>
+            <p class="text-muted">
+                Exams for @Model.FirstOrDefault()?.SubjectName
+            </p>
+        </div>
+
+        <a asp-controller="Exam"
+           asp-action="Create"
+           asp-route-subjectId="@Context.Request.Query["subjectId"]"
+           class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Create Exam
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <h3>No exams yet</h3>
+            <p class="text-muted">
+                There are no exams for this subject.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var exam in Model)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h5 class="mb-1">@exam.Title</h5>
+
+                        <small class="text-muted">
+                            Date: @exam.ExamDate.ToString("dd.MM.yyyy HH:mm")
+                        </small>
+
+                        <div class="mt-2">
+                            @if (exam.Grade.HasValue)
+                            {
+                                <span class="badge bg-success">
+                                    Grade: @exam.Grade.Value.ToString("F2")
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">
+                                    No grade yet
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

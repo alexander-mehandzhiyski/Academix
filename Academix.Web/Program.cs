@@ -30,6 +30,7 @@ namespace Academix.Web
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ISubjectService, SubjectService>();
             builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();
+            builder.Services.AddScoped<IExamService, ExamService>();
 
             WebApplication app = builder.Build();
 

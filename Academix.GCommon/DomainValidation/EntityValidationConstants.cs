@@ -23,8 +23,8 @@ namespace Academix.GCommon.DomainValidation
             public const int ExamTitleMinLength = 5;
             public const int ExamTitleMaxLength = 150;
 
-            //public const int ExamGradeMinValue = 2;
-            //public const int ExamGradeMaxValue = 6;
+            public const int ExamGradeMinValue = 2;
+            public const int ExamGradeMaxValue = 6;
 
 
         }

@@ -1,0 +1,54 @@
+﻿@model ExamInputModel
+
+@{
+    ViewData["Title"] = "Create Exam";
+}
+
+<div class="container py-5">
+    <h1 class="fw-bold mb-4">Create Exam</h1>
+
+    <form asp-controller="Exam" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="SubjectId" />
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">Exam Title</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ExamDate" class="form-label">Exam Date</label>
+            <input asp-for="ExamDate"
+                   type="datetime-local"
+                   asp-format="{0:yyyy-MM-ddTHH:mm}"
+                   class="form-control" />
+            <span asp-validation-for="ExamDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Grade" class="form-label">Goal Grade (optional)</label>
+            <input asp-for="Grade"
+                   type="number"
+                   min="2"
+                   max="6"
+                   step="0.01"
+                   class="form-control" />
+            <span asp-validation-for="Grade" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Create Exam
+        </button>
+
+        <a asp-controller="Subject"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+    </form>
+</div>

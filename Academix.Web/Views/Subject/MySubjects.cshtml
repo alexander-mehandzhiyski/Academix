@@ -59,6 +59,12 @@
                        class="btn btn-outline-primary">
                         View Tasks
                     </a>
+                    <a asp-controller="Exam"
+                       asp-action="ExamsOfSubject"
+                       asp-route-subjectId="@subject.Id"
+                       class="btn btn-outline-primary btn-sm">
+                        Exams
+                    </a>
                 </div>
             }
         </div>
