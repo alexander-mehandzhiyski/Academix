@@ -1,0 +1,43 @@
+﻿@model StudyTaskViewModel
+
+@{
+    ViewData["Title"] = "Delete Study Task";
+}
+
+<div class="container py-5">
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 600px;">
+        <div class="card-body p-4">
+            <h1 class="fw-bold text-danger">Delete Study Task</h1>
+
+            <p>Are you sure you want to delete this task?</p>
+
+            <h4>@Model.Title</h4>
+
+            <p class="text-muted">
+                Subject: @Model.SubjectName
+            </p>
+
+            <p>
+                Due date: @Model.DueDate.ToString("dd.MM.yyyy HH:mm")
+            </p>
+
+            <form asp-controller="StudyTask"
+                  asp-action="DeleteConfirmed"
+                  asp-route-taskId="@Model.Id"
+                  asp-route-subjectId="@Model.SubjectId"
+                  method="post">
+
+                <button type="submit" class="btn btn-danger">
+                    Confirm Delete
+                </button>
+
+                <a asp-controller="StudyTask"
+                   asp-action="TasksOfSubject"
+                   asp-route-subjectId="@Model.SubjectId"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

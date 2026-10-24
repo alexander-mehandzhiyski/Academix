@@ -41,6 +41,12 @@
                        class="btn btn-outline-primary btn-sm">
                         Edit
                     </a>
+                    <a asp-controller="StudyTask"
+                       asp-action="Delete"
+                       asp-route-taskId="@task.Id"
+                       class="btn btn-outline-danger btn-sm">
+                        Delete
+                    </a>
 
                     @if (task.IsCompleted)
                     {

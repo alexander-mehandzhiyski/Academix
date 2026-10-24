@@ -123,5 +123,45 @@ namespace Academix.Web.Controllers
 
             return RedirectToAction("TasksOfSubject", new { subjectId = inputModel.SubjectId });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete([FromQuery] int taskId)
+        {
+            string? userId = GetUserId();
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            StudyTaskViewModel? task = await studyTaskService.GetStudyTaskByIdAsync(taskId, userId);
+
+            if(task == null)
+            {
+                return NotFound();
+            }
+
+            return View(task);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed([FromQuery] int taskId, [FromQuery] int subjectId)
+        {
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            bool deleted = await studyTaskService.DeleteStudyTaskAsync(taskId, userId);
+
+            if(!deleted)
+            {
+                return BadRequest("Failed to delete study task.");
+            }
+
+            return RedirectToAction("TasksOfSubject", new { subjectId });
+        }
     }
 }

@@ -46,7 +46,19 @@ namespace Academix.Serices.Core
 
         public async Task<bool> DeleteStudyTaskAsync(int taskId, string userId)
         {
-            throw new NotImplementedException();
+            var studyTask = await dbContext.StudyTasks
+                .FirstOrDefaultAsync(st=>st.Id==taskId && dbContext.UsersSubjects.Any(us=>us.UserId==userId && us.SubjectId==st.SubjectId));
+
+            if(studyTask == null)
+            {
+                return false;
+            }
+
+            dbContext.StudyTasks.Remove(studyTask);
+
+            await dbContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<bool> EditStudyTaskAsync(int taskId, StudyTaskInputModel model, string userId)
