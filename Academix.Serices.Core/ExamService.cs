@@ -38,19 +38,69 @@ namespace Academix.Serices.Core
             return true;
         }
        
-        public Task<bool> DeleteExamAsync(int examId, string userId)
+        public async Task<bool> DeleteExamAsync(int examId, string userId)
         {
-            throw new NotImplementedException();
+            var exam = await dbContext.Exams
+                .Where(e => e.Id == examId && dbContext.UsersSubjects.Any(us => us.UserId == userId && us.SubjectId == e.SubjectId))
+                .FirstOrDefaultAsync();
+
+            if(exam == null)
+            {
+                return false;
+            }
+
+            dbContext.Exams.Remove(exam);
+            await dbContext.SaveChangesAsync();
+
+            return true;
         }
 
-        public Task<bool> EditExamAsync(int examId, ExamInputModel model, string userId)
+        public async Task<bool> EditExamAsync(int examId, ExamInputModel model, string userId)
         {
-            throw new NotImplementedException();
+            var exam = await dbContext.Exams
+                .FirstOrDefaultAsync(e => e.Id == examId 
+                && dbContext.UsersSubjects
+                .Any(us => us.UserId == userId 
+                && us.SubjectId == e.SubjectId));
+
+            if(exam == null)
+            {
+                return false;
+            }
+
+            if(exam.SubjectId != model.SubjectId)
+            {
+                return false;
+            }
+
+            if (model.ExamDate < DateTime.Now)
+            {
+                return false;
+            }
+
+            exam.Title = model.Title;
+            exam.Grade = model.Grade;
+            exam.ExamDate = model.ExamDate;
+
+            await dbContext.SaveChangesAsync();
+
+            return true;
         }
 
-        public Task<ExamViewModel?> GetExamByIdAsync(int examId, string userId)
+        public async Task<ExamViewModel?> GetExamByIdAsync(int examId, string userId)
         {
-            throw new NotImplementedException();
+            return await dbContext.Exams
+                .Where(e=>e.Id==examId && dbContext.UsersSubjects.Any(us => us.UserId == userId && us.SubjectId == e.SubjectId))
+                .Select(e=>new ExamViewModel
+                {
+                    Id = e.Id,
+                    Title = e.Title,
+                    Grade = e.Grade,
+                    ExamDate = e.ExamDate,
+                    SubjectId = e.SubjectId,
+                    SubjectName = e.Subject.Name
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<ExamViewModel>> GetExamsBySubjectAsync(int subjectId, string userId)

@@ -1,4 +1,6 @@
-﻿namespace Academix.Web.ViewModels.Exam
+﻿using Academix.Web.ViewModels.CustomValidationAttributes;
+
+namespace Academix.Web.ViewModels.Exam
 {
     public class ExamViewModel
     {

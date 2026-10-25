@@ -68,5 +68,112 @@ namespace Academix.Web.Controllers
 
             return View(exams);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int examId)
+        {
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            ExamViewModel? exam = await examService.GetExamByIdAsync(examId, userId);
+
+            if (exam == null)
+            {
+                return NotFound();
+            }
+
+            
+            ExamInputModel inputModel = new()
+            {
+                Title = exam.Title,
+                Grade = exam.Grade,
+                ExamDate = exam.ExamDate,
+                SubjectId = exam.SubjectId
+            };
+         
+            ViewBag.ExamId = exam.Id;
+
+            return View(inputModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int examId, ExamInputModel inputModel)
+        {
+            string? userId = GetUserId();
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            if(!ModelState.IsValid)
+            {
+                ViewBag.ExamId = examId;
+                return View(inputModel);
+            }
+
+            bool result = await examService.EditExamAsync(examId, inputModel, userId);
+
+            if (!result)
+            {
+                ModelState.AddModelError(string.Empty, "Unable to edit exam.");
+                ViewBag.ExamId = examId;
+                return View(inputModel);
+            }
+
+            return RedirectToAction("ExamsOfSubject", new { subjectId = inputModel.SubjectId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int examId)
+        {
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            ExamViewModel? exam = await examService.GetExamByIdAsync(examId, userId);
+
+            if (exam == null)
+            {
+                return NotFound();
+            }
+
+            return View(exam);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int examId)
+        {
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            ExamViewModel? exam = await examService.GetExamByIdAsync(examId, userId);
+
+            if(exam == null)
+            {
+                return NotFound();
+            }
+            
+            bool result = await examService.DeleteExamAsync(examId, userId);
+
+            if (!result)
+            {
+                ModelState.AddModelError(string.Empty, "Unable to delete exam.");
+                return View("Delete", exam);
+            }
+
+            return RedirectToAction("ExamsOfSubject", new { subjectId = exam.SubjectId });
+        }
     }
 }

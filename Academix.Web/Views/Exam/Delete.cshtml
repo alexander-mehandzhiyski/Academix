@@ -1,0 +1,56 @@
+﻿@model ExamViewModel
+
+@{
+    ViewData["Title"] = "Delete Exam";
+}
+
+<div class="container py-5">
+    <h1 class="fw-bold mb-4">Delete Exam</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Title</h5>
+
+            <p class="text-muted">
+                Subject: @Model.SubjectName
+            </p>
+
+            <p>
+                Exam date: @Model.ExamDate.ToString("dd.MM.yyyy")
+            </p>
+
+            <p>
+                Grade:
+                @(Model.Grade.HasValue
+                    ? Model.Grade.Value.ToString("F2")
+                    : "No grade yet")
+            </p>
+
+            <p class="text-danger">
+                Are you sure you want to delete this exam?
+            </p>
+
+            <form asp-controller="Exam"
+                  asp-action="DeleteConfirmed"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="examId"
+                       value="@Model.Id" />
+
+                <button type="submit" class="btn btn-danger">
+                    Confirm Delete
+                </button>
+
+                <a asp-controller="Exam"
+                   asp-action="ExamsBySubject"
+                   asp-route-subjectId="@Model.SubjectId"
+                   class="btn btn-secondary">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

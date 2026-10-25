@@ -57,6 +57,18 @@
                                 </span>
                             }
                         </div>
+                        <a asp-controller="Exam"
+                           asp-action="Edit"
+                           asp-route-examId="@exam.Id"
+                           class="btn btn-outline-primary btn-sm">
+                            Edit
+                        </a>
+                        <a asp-controller="Exam"
+                           asp-action="Delete"
+                           asp-route-examId="@exam.Id"
+                           class="btn btn-outline-danger btn-sm">
+                            Delete
+                        </a>
                     </div>
                 </div>
             }
