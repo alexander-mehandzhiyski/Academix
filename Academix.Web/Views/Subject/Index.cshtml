@@ -10,13 +10,6 @@
         Explore the available subjects.
     </p>
 
-    @if (TempData["Message"] != null)
-    {
-        <div class="alert alert-info">
-            @TempData["Message"]
-        </div>
-    }
-
     @if (!Model.Any())
     {
         <p>No subjects are available yet.</p>
@@ -35,7 +28,7 @@
                     }
                     else if (User.Identity?.IsAuthenticated == true)
                     {
-                        <form asp-controller="Subjects"
+                        <form asp-controller="Subject"
                               asp-action="AddToMySubjects"
                               method="post">
                             <input type="hidden"

@@ -29,5 +29,9 @@ namespace Academix.Serices.Core.Interfaces
             int taskId,
             bool isCompleted,
             string userId);
+
+        Task<bool> UserHasAccessToSubjectAsync(
+            int subjectId,
+            string userId);
     }
 }

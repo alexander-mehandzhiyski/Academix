@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static Academix.GCommon.DomainValidation.EntityValidationConstants.StudyTask;
 
@@ -25,5 +26,10 @@ namespace Academix.Data.Models
         public int SubjectId { get; set; }
 
         public Subject Subject { get; set; } = null!;
+
+        public string UserId { get; set; } = null!;
+
+        [ForeignKey(nameof(UserId))]
+        public virtual IdentityUser User { get; set; } = null!;
     }
 }

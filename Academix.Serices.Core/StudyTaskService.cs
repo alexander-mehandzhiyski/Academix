@@ -1,4 +1,5 @@
-﻿using Academix.Data;
+﻿
+using Academix.Data;
 using Academix.Data.Models;
 using Academix.Serices.Core.Interfaces;
 using Academix.Web.ViewModels.StudyTask;
@@ -14,17 +15,17 @@ namespace Academix.Serices.Core
         {
             this.dbContext = dbContext;
         }
-        public async Task<bool> CreateStudyTaskAsync(StudyTaskInputModel inputModel, string userId)
+
+        public async Task<bool> CreateStudyTaskAsync(
+            StudyTaskInputModel inputModel, string userId)
         {
-            bool subjectsBelongsToUser = await dbContext.UsersSubjects
-                .AnyAsync(us => us.SubjectId == inputModel.SubjectId && us.UserId == userId);
+            bool hasAccess = await dbContext.UsersSubjects
+                .AnyAsync(us =>
+                    us.SubjectId == inputModel.SubjectId &&
+                    us.UserId == userId);
 
-            if (!subjectsBelongsToUser)
-            {
-                return false;
-            }
-
-            if (inputModel.DueDate < DateTime.Now)
+            if (!hasAccess ||
+                inputModel.DueDate.Date < DateTime.Today)
             {
                 return false;
             }
@@ -35,6 +36,7 @@ namespace Academix.Serices.Core
                 Description = inputModel.Description,
                 DueDate = inputModel.DueDate,
                 SubjectId = inputModel.SubjectId,
+                UserId = userId,
                 IsCompleted = false
             };
 
@@ -44,44 +46,46 @@ namespace Academix.Serices.Core
             return true;
         }
 
-        public async Task<bool> DeleteStudyTaskAsync(int taskId, string userId)
+        public async Task<bool> DeleteStudyTaskAsync(
+            int taskId, string userId)
         {
             var studyTask = await dbContext.StudyTasks
-                .FirstOrDefaultAsync(st=>st.Id==taskId && dbContext.UsersSubjects.Any(us=>us.UserId==userId && us.SubjectId==st.SubjectId));
-
-            if(studyTask == null)
-            {
-                return false;
-            }
-
-            dbContext.StudyTasks.Remove(studyTask);
-
-            await dbContext.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> EditStudyTaskAsync(int taskId, StudyTaskInputModel model, string userId)
-        {
-            if(model.DueDate < DateTime.Now)
-            {
-                return false;
-            }
-
-            var studyTask = await dbContext.StudyTasks
-                .FirstOrDefaultAsync(t =>
-                t.Id == taskId &&
-                t.SubjectId == model.SubjectId &&
-                dbContext.UsersSubjects.Any(us =>
-                us.SubjectId == t.SubjectId &&
-                us.UserId == userId));
+                .FirstOrDefaultAsync(st =>
+                    st.Id == taskId &&
+                    st.UserId == userId &&
+                    dbContext.UsersSubjects.Any(us =>
+                        us.UserId == userId &&
+                        us.SubjectId == st.SubjectId));
 
             if (studyTask == null)
             {
                 return false;
             }
 
-            if (studyTask.SubjectId != model.SubjectId)
+            dbContext.StudyTasks.Remove(studyTask);
+            await dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> EditStudyTaskAsync(
+            int taskId, StudyTaskInputModel model, string userId)
+        {
+            if (model.DueDate.Date < DateTime.Today)
+            {
+                return false;
+            }
+
+            var studyTask = await dbContext.StudyTasks
+                .FirstOrDefaultAsync(st =>
+                    st.Id == taskId &&
+                    st.UserId == userId &&
+                    st.SubjectId == model.SubjectId &&
+                    dbContext.UsersSubjects.Any(us =>
+                        us.UserId == userId &&
+                        us.SubjectId == st.SubjectId));
+
+            if (studyTask == null)
             {
                 return false;
             }
@@ -95,10 +99,16 @@ namespace Academix.Serices.Core
             return true;
         }
 
-        public async Task<StudyTaskViewModel?> GetStudyTaskByIdAsync(int taskId, string userId)
+        public async Task<StudyTaskViewModel?> GetStudyTaskByIdAsync(
+            int taskId, string userId)
         {
             return await dbContext.StudyTasks
-                .Where(st => st.Id == taskId && dbContext.UsersSubjects.Any(us => us.UserId == userId && us.SubjectId == st.SubjectId))
+                .Where(st =>
+                    st.Id == taskId &&
+                    st.UserId == userId &&
+                    dbContext.UsersSubjects.Any(us =>
+                        us.UserId == userId &&
+                        us.SubjectId == st.SubjectId))
                 .Select(st => new StudyTaskViewModel
                 {
                     Id = st.Id,
@@ -112,18 +122,23 @@ namespace Academix.Serices.Core
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<StudyTaskViewModel>> GetStudyTasksBySubjectAsync(int subjectId, string userId)
+        public async Task<IEnumerable<StudyTaskViewModel>>
+            GetStudyTasksBySubjectAsync(int subjectId, string userId)
         {
-            bool subjectsBelongsToUser = await dbContext.UsersSubjects
-                .AnyAsync(us => us.SubjectId == subjectId && us.UserId == userId);
+            bool hasAccess = await dbContext.UsersSubjects
+                .AnyAsync(us =>
+                    us.SubjectId == subjectId &&
+                    us.UserId == userId);
 
-            if (!subjectsBelongsToUser)
+            if (!hasAccess)
             {
                 return Enumerable.Empty<StudyTaskViewModel>();
             }
 
             return await dbContext.StudyTasks
-                .Where(st => st.SubjectId == subjectId)
+                .Where(st =>
+                    st.SubjectId == subjectId &&
+                    st.UserId == userId)
                 .Select(st => new StudyTaskViewModel
                 {
                     Id = st.Id,
@@ -140,12 +155,18 @@ namespace Academix.Serices.Core
                 .ToListAsync();
         }
 
-        public async Task<bool> SetStudyTaskCompletedAsync(int taskId, bool isCompleted, string userId)
+        public async Task<bool> SetStudyTaskCompletedAsync(
+            int taskId, bool isCompleted, string userId)
         {
             var studyTask = await dbContext.StudyTasks
-                .FirstOrDefaultAsync(st => st.Id == taskId && dbContext.UsersSubjects.Any(us => us.UserId == userId && us.SubjectId == st.SubjectId));
+                .FirstOrDefaultAsync(st =>
+                    st.Id == taskId &&
+                    st.UserId == userId &&
+                    dbContext.UsersSubjects.Any(us =>
+                        us.UserId == userId &&
+                        us.SubjectId == st.SubjectId));
 
-            if(studyTask == null)
+            if (studyTask == null)
             {
                 return false;
             }
@@ -155,6 +176,15 @@ namespace Academix.Serices.Core
             await dbContext.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<bool> UserHasAccessToSubjectAsync(
+            int subjectId, string userId)
+        {
+            return await dbContext.UsersSubjects
+                .AnyAsync(us =>
+                    us.SubjectId == subjectId &&
+                    us.UserId == userId);
         }
     }
 }

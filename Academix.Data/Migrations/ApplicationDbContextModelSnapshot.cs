@@ -44,27 +44,17 @@ namespace Academix.Web.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Exams");
+                    b.HasIndex("UserId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ExamDate = new DateTime(2026, 11, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SubjectId = 1,
-                            Title = "Midterm Mathematics"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ExamDate = new DateTime(2026, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SubjectId = 2,
-                            Title = "Final History"
-                        });
+                    b.ToTable("Exams");
                 });
 
             modelBuilder.Entity("Academix.Data.Models.StudyTask", b =>
@@ -93,40 +83,17 @@ namespace Academix.Web.Data.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("StudyTasks");
+                    b.HasIndex("UserId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Introduction to algebra",
-                            DueDate = new DateTime(2026, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = false,
-                            SubjectId = 1,
-                            Title = "Read Chapter 1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Solve exercises 1-10",
-                            DueDate = new DateTime(2026, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = false,
-                            SubjectId = 1,
-                            Title = "Practice problems"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Focus on timeline and key events",
-                            DueDate = new DateTime(2026, 10, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = false,
-                            SubjectId = 2,
-                            Title = "Read about WW2"
-                        });
+                    b.ToTable("StudyTasks");
                 });
 
             modelBuilder.Entity("Academix.Data.Models.Subject", b =>
@@ -390,7 +357,15 @@ namespace Academix.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Subject");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Academix.Data.Models.StudyTask", b =>
@@ -401,7 +376,15 @@ namespace Academix.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Subject");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Academix.Data.Models.UserSubject", b =>

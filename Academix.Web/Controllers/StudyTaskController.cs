@@ -18,6 +18,20 @@ namespace Academix.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Create([FromQuery] int subjectId)
         {
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            bool hasAccess = await studyTaskService.UserHasAccessToSubjectAsync(subjectId, userId);
+
+            if(!hasAccess)
+            {
+                return Forbid();
+            }
+
             StudyTaskInputModel inputModel = new StudyTaskInputModel
             {
                 SubjectId = subjectId,
@@ -42,6 +56,13 @@ namespace Academix.Web.Controllers
                 return Unauthorized();
             }
 
+            bool hasAccess = await studyTaskService.UserHasAccessToSubjectAsync(inputModel.SubjectId, userId);
+
+            if (!hasAccess)
+            {
+                return NotFound();
+            }
+
             bool isCreated = await studyTaskService.CreateStudyTaskAsync(inputModel, userId);
 
             if (!isCreated)
@@ -50,7 +71,7 @@ namespace Academix.Web.Controllers
                 return View(inputModel);
             }
 
-            return RedirectToAction("MySubjects");
+            return RedirectToAction("TasksOfSubject", new { subjectId = inputModel.SubjectId });
         }
 
         [HttpGet]
@@ -61,6 +82,13 @@ namespace Academix.Web.Controllers
             if (userId == null)
             {
                 return Unauthorized();
+            }
+
+            bool hasAccess = await studyTaskService.UserHasAccessToSubjectAsync(subjectId, userId);
+
+            if (!hasAccess)
+            {
+                return NotFound();
             }
 
             IEnumerable<StudyTaskViewModel> tasks = await studyTaskService.GetStudyTasksBySubjectAsync(subjectId, userId);
@@ -106,6 +134,13 @@ namespace Academix.Web.Controllers
             if (userId == null)
             {
                 return Unauthorized();
+            }
+
+            bool hasAccess = await studyTaskService.UserHasAccessToSubjectAsync(inputModel.SubjectId, userId);
+
+            if (!hasAccess)
+            {
+                return NotFound();
             }
 
             if (!ModelState.IsValid)
@@ -154,6 +189,13 @@ namespace Academix.Web.Controllers
                 return Unauthorized();
             }
 
+            bool hasAccess = await studyTaskService.UserHasAccessToSubjectAsync(subjectId, userId);
+
+            if (!hasAccess)
+            {
+                return NotFound();
+            }
+
             bool deleted = await studyTaskService.DeleteStudyTaskAsync(taskId, userId);
 
             if(!deleted)
@@ -172,6 +214,13 @@ namespace Academix.Web.Controllers
             if(userId == null)
             {
                 return Unauthorized();
+            }
+
+            bool hasAccess =await studyTaskService.UserHasAccessToSubjectAsync(subjectId, userId);
+
+            if (!hasAccess)
+            {
+                return NotFound();
             }
 
             bool result = await studyTaskService.SetStudyTaskCompletedAsync(taskId, isCompleted, userId);

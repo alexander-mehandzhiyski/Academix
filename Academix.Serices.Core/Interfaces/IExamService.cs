@@ -22,5 +22,9 @@ namespace Academix.Serices.Core.Interfaces
         Task<bool> DeleteExamAsync(
             int examId,
             string userId);
+
+        Task<bool> UserHasAccessToSubjectAsync(
+            int subjectId,
+            string userId);
     }
 }

@@ -28,7 +28,8 @@ namespace Academix.Serices.Core
                 Title = model.Title,
                 Grade = model.Grade,
                 ExamDate = model.ExamDate,
-                SubjectId = model.SubjectId
+                SubjectId = model.SubjectId,
+                UserId = userId
             };
 
             await dbContext.Exams.AddAsync(exam);
@@ -41,7 +42,7 @@ namespace Academix.Serices.Core
         public async Task<bool> DeleteExamAsync(int examId, string userId)
         {
             var exam = await dbContext.Exams
-                .Where(e => e.Id == examId && dbContext.UsersSubjects.Any(us => us.UserId == userId && us.SubjectId == e.SubjectId))
+                .Where(e => e.Id == examId && e.UserId == userId && dbContext.UsersSubjects.Any(us => us.UserId == userId && us.SubjectId == e.SubjectId))
                 .FirstOrDefaultAsync();
 
             if(exam == null)
@@ -58,9 +59,9 @@ namespace Academix.Serices.Core
         public async Task<bool> EditExamAsync(int examId, ExamInputModel model, string userId)
         {
             var exam = await dbContext.Exams
-                .FirstOrDefaultAsync(e => e.Id == examId 
-                && dbContext.UsersSubjects
-                .Any(us => us.UserId == userId 
+                .FirstOrDefaultAsync(e => e.Id == examId
+                && e.UserId == userId && dbContext.UsersSubjects
+                .Any(us => us.UserId == userId
                 && us.SubjectId == e.SubjectId));
 
             if(exam == null)
@@ -90,8 +91,8 @@ namespace Academix.Serices.Core
         public async Task<ExamViewModel?> GetExamByIdAsync(int examId, string userId)
         {
             return await dbContext.Exams
-                .Where(e=>e.Id==examId && dbContext.UsersSubjects.Any(us => us.UserId == userId && us.SubjectId == e.SubjectId))
-                .Select(e=>new ExamViewModel
+                .Where(e => e.Id == examId && e.UserId == userId &&dbContext.UsersSubjects.Any(us => us.UserId == userId && us.SubjectId == e.SubjectId))
+                .Select(e => new ExamViewModel
                 {
                     Id = e.Id,
                     Title = e.Title,
@@ -113,9 +114,9 @@ namespace Academix.Serices.Core
             }
 
             return await dbContext.Exams
-                .Where(e=>e.SubjectId == subjectId)
+                .Where(e => e.SubjectId == subjectId && e.UserId == userId)
                 .OrderByDescending(e => e.ExamDate)
-                .Select(e=>new ExamViewModel
+                .Select(e => new ExamViewModel
                 {
                     Id = e.Id,
                     Title = e.Title,
@@ -125,6 +126,12 @@ namespace Academix.Serices.Core
                     SubjectName = e.Subject.Name
                 })
                 .ToListAsync();
+        }
+
+        public async Task<bool> UserHasAccessToSubjectAsync(int subjectId, string userId)
+        {
+            return await dbContext.UsersSubjects
+                .AnyAsync(us => us.SubjectId == subjectId && us.UserId == userId);
         }
     }
 }

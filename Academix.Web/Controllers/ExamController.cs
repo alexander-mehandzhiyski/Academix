@@ -18,6 +18,20 @@ namespace Academix.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(int subjectId)
         {
+            string? userId = GetUserId();
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            bool hasAccess = await examService.UserHasAccessToSubjectAsync(subjectId, userId);
+
+            if (!hasAccess)
+            {
+                return Forbid();
+            }
+
             ExamInputModel inputModel = new ExamInputModel
             {
                 SubjectId = subjectId,
@@ -62,6 +76,13 @@ namespace Academix.Web.Controllers
             if (userId == null)
             {
                 return Unauthorized();
+            }
+
+            bool hasAccess = await examService.UserHasAccessToSubjectAsync(subjectId, userId);
+
+            if (!hasAccess)
+            {
+                return Forbid();
             }
 
             IEnumerable<ExamViewModel> exams = await examService.GetExamsBySubjectAsync(subjectId, userId);

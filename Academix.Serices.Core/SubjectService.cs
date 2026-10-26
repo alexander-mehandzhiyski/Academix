@@ -93,5 +93,21 @@ namespace Academix.Serices.Core
 
             return true;
         }
+
+        public async Task<bool> RemoveSubjectFromMySubjectsAsync(int subjectId, string userId)
+        {
+            var userSubject = await dbContext.UsersSubjects
+                .FirstOrDefaultAsync(us => us.UserId == userId && us.SubjectId == subjectId);
+
+            if(userSubject == null)
+            {
+                return false;
+            }
+
+            dbContext.UsersSubjects.Remove(userSubject);
+            await dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

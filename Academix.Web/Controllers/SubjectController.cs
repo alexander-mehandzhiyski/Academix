@@ -1,9 +1,6 @@
-﻿using Academix.Serices.Core;
-using Academix.Serices.Core.Interfaces;
-using Academix.Web.ViewModels.Subject;
+﻿using Academix.Serices.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Academix.Web.Controllers
 {
@@ -56,14 +53,14 @@ namespace Academix.Web.Controllers
 
             if(!isAdded)
             {
-                TempData["Message"] = "Предметът не съществува или вече е добавен.";
+                TempData["Message"] = "Subject not found or already added.";
             }
             else
             {
-                TempData["Message"] = "Предметът е добавен успешно!";
+                TempData["Message"] = "Subject added successfully!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("MySubjects");
         }
 
         [HttpGet]
@@ -84,6 +81,30 @@ namespace Academix.Web.Controllers
             }
 
             return View(subject);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromMySubjects(int subjectId)
+        {
+            string? userId = GetUserId();
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            bool isRemoved = await subjectService.RemoveSubjectFromMySubjectsAsync(subjectId, userId);
+
+            if(!isRemoved)
+            {
+                TempData["Message"] = "Subject not found or not added.";
+            }
+            else
+            {
+                TempData["Message"] = "Subject removed successfully!";
+            }
+
+            return RedirectToAction("MySubjects");
         }
     }
 }

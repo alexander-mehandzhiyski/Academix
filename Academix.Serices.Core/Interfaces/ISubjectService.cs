@@ -14,5 +14,9 @@
         Task<bool> AddSubjectToMySubjectsAsync(
             int subjectId,
             string userId);
+
+        Task<bool> RemoveSubjectFromMySubjectsAsync(
+            int subjectId,
+            string userId);
     }
 }
