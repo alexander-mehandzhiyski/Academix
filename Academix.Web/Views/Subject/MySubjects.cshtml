@@ -3,84 +3,105 @@
 @{
     ViewData["Title"] = "My Subjects";
 }
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
-        @TempData["Message"]
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close">
-        </button>
-    </div>
-}
 
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<section class="my-subjects-page">
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    }
+
+    <header class="my-subjects-header">
         <div>
-            <h1 class="fw-bold">My Subjects</h1>
-            <p class="text-muted">Your selected subjects.</p>
+            <span class="my-subjects-eyebrow">MY PERSONAL COLLECTION</span>
+            <h1>My Subjects<span class="my-subjects-period">.</span></h1>
+            <p>Everything you're studying, organized in one place.</p>
         </div>
 
         <a asp-controller="Subject"
            asp-action="Index"
-           class="btn btn-primary">
-            Explore Subjects
+           class="my-subjects-browse">
+            Explore catalog <span aria-hidden="true">↗</span>
         </a>
-    </div>
+    </header>
 
     @if (!Model.Any())
     {
-        <div class="text-center py-5">
-            <h3>No subjects yet</h3>
-            <p class="text-muted">
-                Add subjects from the catalog to see them here.
+        <div class="my-subjects-empty">
+            <span class="my-subjects-empty-mark">01</span>
+            <h2>Your learning space starts here.</h2>
+            <p>
+                Add subjects from the catalog to organize your tasks
+                and keep track of your exams.
             </p>
 
             <a asp-controller="Subject"
                asp-action="Index"
-               class="btn btn-primary">
-                Browse Subjects
+               class="my-subjects-empty-link">
+                Discover subjects →
             </a>
         </div>
     }
     else
     {
-        <div class="list-group">
+        <div class="my-subjects-summary">
+            <span>YOUR COLLECTION</span>
+            <span>@Model.Count() @(Model.Count() == 1 ? "SUBJECT" : "SUBJECTS")</span>
+        </div>
+
+        <div class="my-subjects-list">
+            @{
+                var subjectIndex = 0;
+            }
+
             @foreach (var subject in Model)
             {
-                <div class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <h5 class="mb-0">@subject.Name</h5>
+                subjectIndex++;
 
-                    <a asp-controller="Subject"
-                       asp-action="Details"
-                       asp-route-id="@subject.Id"
-                       class="btn btn-outline-primary">
-                        View Details
-                    </a>
-                    <a asp-controller="StudyTask"
-                       asp-action="Create"
-                       asp-route-subjectId="@subject.Id"
-                       class="btn btn-primary">
-                        Create Task
-                    </a>
-                    <a asp-controller="StudyTask"
-                       asp-action="TasksOfSubject"
-                       asp-route-subjectId="@subject.Id"
-                       class="btn btn-outline-primary">
-                        View Tasks
-                    </a>
-                    <a asp-controller="Exam"
-                       asp-action="ExamsOfSubject"
-                       asp-route-subjectId="@subject.Id"
-                       class="btn btn-outline-primary btn-sm">
-                        Exams
-                    </a>
+                <article class="my-subject-row">
+                    <div class="my-subject-index">
+                        <span>SUBJECT</span>
+                        <strong>@subjectIndex.ToString("D2")</strong>
+                    </div>
+
+                    <div class="my-subject-info">
+                        <h2>@subject.Name</h2>
+                        <span class="my-subject-status">
+                            <span></span>
+                            In your collection
+                        </span>
+                    </div>
+
+                    <nav class="my-subject-links" aria-label="@subject.Name actions">
+                        <a asp-controller="Subject"
+                           asp-action="Details"
+                           asp-route-id="@subject.Id">
+                            Details
+                        </a>
+
+                        <a asp-controller="StudyTask"
+                           asp-action="TasksOfSubject"
+                           asp-route-subjectId="@subject.Id">
+                            Tasks
+                        </a>
+
+                        <a asp-controller="Exam"
+                           asp-action="ExamsOfSubject"
+                           asp-route-subjectId="@subject.Id">
+                            Exams
+                        </a>
+                    </nav>
+
                     <form asp-controller="Subject"
                           asp-action="RemoveFromMySubjects"
                           method="post"
-                          class="d-inline">
-
+                          class="my-subject-remove">
                         @Html.AntiForgeryToken()
 
                         <input type="hidden"
@@ -88,12 +109,14 @@
                                value="@subject.Id" />
 
                         <button type="submit"
-                                class="btn btn-outline-danger btn-sm">
-                            Remove
+                                aria-label="Remove @subject.Name from My Subjects"
+                                title="Remove subject">
+                            ×
                         </button>
                     </form>
-                </div>
+                </article>
             }
         </div>
     }
-</div>
+
+</section>

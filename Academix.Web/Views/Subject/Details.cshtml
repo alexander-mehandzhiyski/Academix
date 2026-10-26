@@ -4,47 +4,51 @@
     ViewData["Title"] = "Subject Details";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white py-3">
-                    <h2 class="mb-0">Subject Details</h2>
-                </div>
+<section class="subject-details-page">
+    <a asp-controller="Subject"
+       asp-action="MySubjects"
+       class="subject-details-back">
+        <span aria-hidden="true">←</span> Back to My Subjects
+    </a>
 
-                <div class="card-body p-4">
-                    <h3 class="mb-3">@Model.Name</h3>
-
-                    <hr />
-
-                    <h5>Description</h5>
-
-                    @if (string.IsNullOrWhiteSpace(Model.Description))
-                    {
-                        <p class="text-muted">
-                            No description available.
-                        </p>
-                    }
-                    else
-                    {
-                        <p>@Model.Description</p>
-                    }
-
-                    <div class="d-flex justify-content-between mt-4">
-                        <a asp-controller="Subject"
-                           asp-action="MySubjects"
-                           class="btn btn-outline-secondary">
-                            My Subjects
-                        </a>
-
-                        <a asp-controller="Subject"
-                           asp-action="Index"
-                           class="btn btn-primary">
-                            All Subjects
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <article class="subject-details-content">
+        <div class="subject-details-label">
+            <span></span>
+            SUBJECT OVERVIEW
         </div>
-    </div>
-</div>
+
+        <h1>@Model.Name</h1>
+
+        <div class="subject-details-divider"></div>
+
+        <section class="subject-description">
+            <h2>About this subject</h2>
+
+            @if (string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <p class="subject-description-empty">
+                    No description has been added for this subject yet.
+                </p>
+            }
+            else
+            {
+                <p class="subject-description-text">@Model.Description</p>
+            }
+        </section>
+
+        <footer class="subject-details-footer">
+            <a asp-controller="Subject"
+               asp-action="MySubjects"
+               class="subject-details-secondary">
+                My Subjects
+            </a>
+
+            <a asp-controller="Subject"
+               asp-action="Index"
+               class="subject-details-primary">
+                Explore All Subjects
+                <span aria-hidden="true">→</span>
+            </a>
+        </footer>
+    </article>
+</section>

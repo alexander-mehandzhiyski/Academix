@@ -1,80 +1,159 @@
-﻿<section class="mb-5 py-5">
-    <div class="row align-items-end mb-5">
-        <div class="col-lg-7">
-            <div class="ax-section-label mb-3">
-                YOUR STUDY JOURNEY
-            </div>
-            <h2 class="display-5 fw-bold mb-3">
-                Turn your goals<br />
-                into a routine.
-            </h2>
-            <p class="text-secondary mb-0" style="max-width: 520px;">
-                A good study routine starts with a simple plan.
-                Academix helps you organize each step.
-            </p>
+﻿@{
+    ViewData["Title"] = "Academix";
+}
+
+<section class="ax-hero">
+    <div class="ax-hero-text">
+        <h1>Всичко за ученето ти, на едно място.</h1>
+        <p class="ax-lead">
+            Следи предметите си, подреди изпитите по дата и разбий подготовката на малки задачи.
+        </p>
+
+        <div class="ax-actions">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a class="btn btn-ax-primary btn-lg"
+                   asp-controller="Subject"
+                   asp-action="MySubjects">
+                    Моите предмети
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-ax-primary btn-lg"
+                   asp-area="Identity"
+                   asp-page="/Account/Register">
+                    Създай профил
+                </a>
+
+                <a class="btn btn-ax-ghost btn-lg"
+                   asp-area="Identity"
+                   asp-page="/Account/Login">
+                    Вход
+                </a>
+            }
         </div>
     </div>
 
-    <div class="row g-0">
-        <div class="col-md-4">
-            <div class="p-4 border-top border-3"
-                 style="border-color: #4169e1 !important;">
-                <span class="small fw-bold text-primary">STEP 01</span>
-                <h3 class="h4 fw-bold mt-3">Discover</h3>
-                <p class="text-secondary">
-                    Explore the catalog and find the subjects
-                    you want to focus on.
-                </p>
-                <a asp-controller="Subject"
-                   asp-action="Index"
-                   class="ax-text-link">
-                    Explore subjects →
-                </a>
-            </div>
+    
+    
+   
+    <aside class="ax-note">
+        <div class="ax-note-heading">
+            <span class="ax-note-mark"></span>
+            <span>БЕЛЕЖКА КЪМ СЕБЕ СИ</span>
         </div>
 
-        <div class="col-md-4">
-            <div class="p-4 border-top border-3"
-                 style="border-color: #4169e1 !important;">
-                <span class="small fw-bold text-primary">STEP 02</span>
-                <h3 class="h4 fw-bold mt-3">Build your space</h3>
-                <p class="text-secondary">
-                    Add your chosen subjects to a personal
-                    collection you can return to.
-                </p>
+        <h2>Не е нужно<br />всичко да стане<br /><span>днес.</span></h2>
 
-                @if (User.Identity?.IsAuthenticated == true)
-                {
-                    <a asp-controller="Subject"
-                       asp-action="MySubjects"
-                       class="ax-text-link">
-                        Open my subjects →
-                    </a>
-                }
-                else
-                {
-                    <a asp-area="Identity"
-                       asp-page="/Account/Register"
-                       class="ax-text-link">
-                        Create an account →
-                    </a>
-                }
+        <div class="ax-note-divider"></div>
+
+        <ul class="ax-note-list">
+            <li>Избери приоритет</li>
+            <li>Направи първата стъпка</li>
+            <li>Продължи със собствено темпо</li>
+        </ul>
+
+        <p class="ax-note-footer">Progress over perfection.</p>
+    </aside>
+
+
+
+</section>
+
+<section class="ax-features">
+    <h2>Какво можеш да правиш</h2>
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="ax-feature">
+                <h3>Предмети</h3>
+                <p>Избери от общия списък предметите, които учиш, и ги добави към профила си.</p>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="p-4 border-top border-3"
-                 style="border-color: #4169e1 !important;">
-                <span class="small fw-bold text-primary">STEP 03</span>
-                <h3 class="h4 fw-bold mt-3">Stay organized</h3>
-                <p class="text-secondary">
-                    Build your study workflow around your
-                    subjects and the tasks you need to complete.
-                </p>
-                <span class="small text-secondary">
-                    Your next step starts here.
-                </span>
+        <div class="col-md-6 col-lg-3">
+            <div class="ax-feature">
+                <h3>Изпити</h3>
+                <p>Запиши датите на изпитите и виж кой е най-близо.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="ax-feature">
+                <h3>Задачи за учене</h3>
+                <p>Разбий подготовката на стъпки и отбелязвай свършеното.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="ax-feature">
+                <h3>Без разсейване</h3>
+                <p>Таймер за фокус със сесии от 25 минути, точно тук.</p>
             </div>
         </div>
     </div>
 </section>
+
+<section class="ax-steps">
+    <h2>Как започваш</h2>
+    <ol>
+        <li><strong>Регистрирай се.</strong> Отнема под минута.</li>
+        <li><strong>Добави предмети.</strong> Избери тези, които учиш този семестър.</li>
+        <li><strong>Планирай.</strong> Създай изпити и към тях задачи за учене.</li>
+    </ol>
+</section>
+
+<section class="ax-timer" aria-labelledby="timer-title">
+    <h2 id="timer-title">Таймер за фокус</h2>
+    <div class="ax-timer-display" id="axTime" aria-live="off">25:00</div>
+    <div class="ax-actions justify-content-center">
+        <button type="button" class="btn btn-ax-primary" id="axStart">Старт</button>
+        <button type="button" class="btn btn-ax-ghost" id="axReset">Нулирай</button>
+    </div>
+    <p class="ax-timer-note" id="axMode">Сесия за учене</p>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const FOCUS = 25 * 60, BREAK = 5 * 60;
+            let remaining = FOCUS, isFocus = true, timerId = null;
+            const timeEl = document.getElementById('axTime');
+            const modeEl = document.getElementById('axMode');
+            const startBtn = document.getElementById('axStart');
+
+            function render() {
+                const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+                const s = String(remaining % 60).padStart(2, '0');
+                timeEl.textContent = m + ':' + s;
+                document.title = (timerId ? m + ':' + s + ' · ' : '') + 'Academix';
+            }
+
+            function tick() {
+                remaining--;
+                if (remaining <= 0) {
+                    isFocus = !isFocus;
+                    remaining = isFocus ? FOCUS : BREAK;
+                    modeEl.textContent = isFocus ? 'Сесия за учене' : 'Почивка';
+                }
+                render();
+            }
+
+            startBtn.addEventListener('click', function () {
+                if (timerId) {
+                    clearInterval(timerId); timerId = null;
+                    startBtn.textContent = 'Старт';
+                } else {
+                    timerId = setInterval(tick, 1000);
+                    startBtn.textContent = 'Пауза';
+                }
+                render();
+            });
+
+            document.getElementById('axReset').addEventListener('click', function () {
+                clearInterval(timerId); timerId = null;
+                isFocus = true; remaining = FOCUS;
+                modeEl.textContent = 'Сесия за учене';
+                startBtn.textContent = 'Старт';
+                render();
+            });
+        })();
+    </script>
+}

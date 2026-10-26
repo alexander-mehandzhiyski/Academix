@@ -4,53 +4,81 @@
     ViewData["Title"] = "All Subjects";
 }
 
-<div class="container py-5">
-    <h1 class="fw-bold mb-2">All Subjects</h1>
-    <p class="text-muted mb-4">
-        Explore the available subjects.
-    </p>
+<section class="subjects-page">
+    <div class="subjects-heading">
+        <div>
+            <span class="subjects-eyebrow">YOUR LEARNING SPACE</span>
+            <h1>All Subjects</h1>
+            <p>Explore the available subjects and build your personal study space.</p>
+        </div>
+
+        <div class="subjects-count">
+            <span class="subjects-count-number">@Model.Count()</span>
+            <span class="subjects-count-label">Available subjects</span>
+        </div>
+    </div>
 
     @if (!Model.Any())
     {
-        <p>No subjects are available yet.</p>
+        <div class="subjects-empty">
+            <h2>No subjects yet</h2>
+            <p>There are no subjects available at the moment.</p>
+        </div>
     }
     else
     {
-        <div class="list-group">
+        <div class="subjects-grid">
             @foreach (var subject in Model)
             {
-                <div class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <h5 class="mb-0">@subject.Name</h5>
+                <article class="subject-card">
+                    <div class="subject-card-top">
+                        <span class="subject-number">SUBJECT</span>
 
-                    @if (subject.IsAdded)
-                    {
-                        <span class="badge bg-success">Added</span>
-                    }
-                    else if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <form asp-controller="Subject"
-                              asp-action="AddToMySubjects"
-                              method="post">
-                            <input type="hidden"
-                                   name="subjectId"
-                                   value="@subject.Id" />
+                        @if (subject.IsAdded)
+                        {
+                            <span class="subject-status subject-status-added">
+                                Added
+                            </span>
+                        }
+                    </div>
 
-                            <button type="submit"
-                                    class="btn btn-primary">
-                                Add to My Subjects
-                            </button>
-                        </form>
-                    }
-                    else
-                    {
-                        <a asp-area="Identity"
-                           asp-page="/Account/Login"
-                           class="btn btn-outline-primary">
-                            Log in to add
-                        </a>
-                    }
-                </div>
+                    <h2>@subject.Name</h2>
+
+                    <div class="subject-card-bottom">
+                        @if (subject.IsAdded)
+                        {
+                            <span class="subject-added-text">
+                                Already in your collection
+                            </span>
+                        }
+                        else if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <form asp-controller="Subject"
+                                  asp-action="AddToMySubjects"
+                                  method="post">
+                                <input type="hidden"
+                                       name="subjectId"
+                                       value="@subject.Id" />
+
+                                <button type="submit"
+                                        class="subject-add-button">
+                                    Add to my subjects
+                                    <span aria-hidden="true">→</span>
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity"
+                               asp-page="/Account/Login"
+                               class="subject-add-button">
+                                Log in to add
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        }
+                    </div>
+                </article>
             }
         </div>
     }
-</div>
+</section>
