@@ -1,77 +1,128 @@
 ﻿@model IEnumerable<ExamViewModel>
-
 @{
     ViewData["Title"] = "Exams";
+
+    var exams = Model.ToList();
+    var subjectName = exams.FirstOrDefault()?.SubjectName;
+    var subjectId = exams.FirstOrDefault()?.SubjectId
+        ?? (int.TryParse(Context.Request.Query["subjectId"], out var id) ? id : 0);
+
+    var goalsSet = exams.Count(e => e.Grade.HasValue);
+    var upcomingExams = exams.Count(e => e.ExamDate > DateTime.Now);
 }
 
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="study-tasks-page exam-list-page">
+    <header class="study-tasks-header">
         <div>
-            <h1 class="fw-bold">Exams</h1>
-            <p class="text-muted">
-                Exams for @Model.FirstOrDefault()?.SubjectName
+            <span class="study-tasks-eyebrow">YOUR LEARNING</span>
+            <h1>Exams</h1>
+            <p class="study-tasks-subtitle">
+                @if (!string.IsNullOrWhiteSpace(subjectName))
+                {
+                    <span>Exams for <strong>@subjectName</strong></span>
+                }
+                else
+                {
+                    <span>Keep track of your upcoming exams and goals.</span>
+                }
             </p>
         </div>
 
         <a asp-controller="Exam"
            asp-action="Create"
-           asp-route-subjectId="@Context.Request.Query["subjectId"]"
-           class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Create Exam
+           asp-route-subjectId="@subjectId"
+           class="study-tasks-create">
+            <span aria-hidden="true">+</span> Create Exam
         </a>
+    </header>
+
+    
+    <div class="exam-list-summary">
+        <div>
+            <span class="exam-summary-label">TOTAL EXAMS</span>
+            <strong>@exams.Count</strong>
+            <p>All scheduled exams</p>
+        </div>
+
+        <div>
+            <span class="exam-summary-label">GOALS SET</span>
+            <strong>@goalsSet</strong>
+            <p>Exams with a target grade</p>
+        </div>
+
+        <div>
+            <span class="exam-summary-label">UPCOMING EXAMS</span>
+            <strong>@upcomingExams</strong>
+            <p>Exams yet to take place</p>
+        </div>
     </div>
 
-    @if (!Model.Any())
+
+    @if (!exams.Any())
     {
-        <div class="text-center py-5">
-            <h3>No exams yet</h3>
-            <p class="text-muted">
-                There are no exams for this subject.
+        <section class="study-tasks-empty">
+            <div class="study-tasks-empty-mark">+</div>
+            <h2>No exams yet</h2>
+            <p>
+                Add your first exam to keep your preparation organized.
             </p>
-        </div>
+        </section>
     }
     else
     {
-        <div class="list-group">
-            @foreach (var exam in Model)
+        <section class="study-tasks-list">
+            <div class="study-tasks-list-heading">
+                <h2>Your exams</h2>
+                <span>@exams.Count @(exams.Count == 1 ? "exam" : "exams")</span>
+            </div>
+
+            @foreach (var exam in exams.OrderBy(e => e.ExamDate))
             {
-                <div class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h5 class="mb-1">@exam.Title</h5>
+                <article class="exam-row">
+                    <div class="exam-date-mark">
+                        <span>@exam.ExamDate.ToString("MMM").ToUpperInvariant()</span>
+                        <strong>@exam.ExamDate.ToString("dd")</strong>
+                    </div>
 
-                        <small class="text-muted">
-                            Date: @exam.ExamDate.ToString("dd.MM.yyyy HH:mm")
-                        </small>
+                    <div class="exam-row-content">
+                        <h3>@exam.Title</h3>
+                        <p>@exam.ExamDate.ToString("dd.MM.yyyy · HH:mm")</p>
+                    </div>
 
-                        <div class="mt-2">
-                            @if (exam.Grade.HasValue)
-                            {
-                                <span class="badge bg-success">
-                                    Grade: @exam.Grade.Value.ToString("F2")
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">
-                                    No grade yet
-                                </span>
-                            }
-                        </div>
+                    <div class="exam-row-grade">
+
+                        @if (exam.Grade.HasValue)
+                        {
+                            <span class="exam-grade-badge">
+                                Goal: @exam.Grade.Value.ToString("F2")
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="study-task-badge study-task-badge-pending">
+                                No goal set
+                            </span>
+                        }
+
+                    </div>
+
+                    <div class="exam-row-actions">
                         <a asp-controller="Exam"
                            asp-action="Edit"
                            asp-route-examId="@exam.Id"
-                           class="btn btn-outline-primary btn-sm">
+                           class="study-task-edit">
                             Edit
                         </a>
+
                         <a asp-controller="Exam"
                            asp-action="Delete"
                            asp-route-examId="@exam.Id"
-                           class="btn btn-outline-danger btn-sm">
+                           class="study-task-delete">
                             Delete
                         </a>
                     </div>
-                </div>
+                </article>
             }
-        </div>
+        </section>
     }
 </div>

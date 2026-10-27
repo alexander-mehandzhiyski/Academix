@@ -27,6 +27,7 @@ namespace Academix.Web
                 options.Password.RequireNonAlphanumeric = false;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ISubjectService, SubjectService>();
             builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();

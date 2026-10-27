@@ -24,8 +24,6 @@ namespace Academix.Data
             base.OnModelCreating(builder);
 
             builder.ApplyConfiguration(new Configuration.SubjectConfiguration());
-            builder.ApplyConfiguration(new Configuration.StudyTaskConfiguration());
-            builder.ApplyConfiguration(new Configuration.ExamConfiguration());
         }
     }
 }

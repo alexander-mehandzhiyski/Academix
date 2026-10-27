@@ -2,53 +2,120 @@
 
 @{
     ViewData["Title"] = "Study Tasks";
+    var tasks = Model.ToList();
+    var subjectName = tasks.FirstOrDefault()?.SubjectName;
+    var completedCount = tasks.Count(t => t.IsCompleted);
 }
 
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="study-tasks-page">
+
+    
+    <header class="study-tasks-header">
         <div>
-            <h1 class="fw-bold">Study Tasks</h1>
-            <p class="text-muted">
-                Tasks for @Model.FirstOrDefault()?.SubjectName
+            <span class="study-tasks-eyebrow">YOUR LEARNING</span>
+            <h1>Study Tasks</h1>
+            <p class="study-tasks-subtitle">
+                @if (!string.IsNullOrWhiteSpace(subjectName))
+                {
+                    <span>Tasks for <strong>@subjectName</strong></span>
+                }
+                else
+                {
+                    <span>Organize your learning, one task at a time.</span>
+                }
             </p>
         </div>
+
+        <div class="study-tasks-header-actions">
+            @if (tasks.Any())
+            {
+                <div class="study-tasks-summary">
+                    <span class="study-tasks-summary-label">COMPLETED</span>
+                    <span class="study-tasks-summary-value">
+                        @completedCount <span>/ @tasks.Count</span>
+                    </span>
+                </div>
+            }
+
+            <a asp-controller="StudyTask"
+               asp-action="Create"
+               asp-route-subjectId="@tasks.FirstOrDefault()?.SubjectId"
+               class="study-tasks-create">
+                <span aria-hidden="true">+</span> Create Task
+            </a>
+        </div>
+    </header>
+
+
+    <div class="study-tasks-progress">
+        <div class="study-tasks-progress-track">
+            <div class="study-tasks-progress-fill"
+                 style="width: @(tasks.Count == 0 ? 0 : completedCount * 100 / tasks.Count)%">
+            </div>
+        </div>
+        <span>
+            @(tasks.Count == 0 ? 0 : completedCount * 100 / tasks.Count)% complete
+        </span>
     </div>
 
-    @if (!Model.Any())
+    @if (!tasks.Any())
     {
-        <div class="text-center py-5">
-            <h3>No tasks yet</h3>
-            <p class="text-muted">
-                Create your first task for this subject.
+        <section class="study-tasks-empty">
+            <div class="study-tasks-empty-mark">+</div>
+            <h2>No tasks yet</h2>
+            <p>
+                Your study plan starts here. When tasks are added to this
+                subject, they will appear on this page.
             </p>
-        </div>
+        </section>
     }
     else
     {
-        <div class="list-group">
-            @foreach (var task in Model)
+        <section class="study-tasks-list">
+            <div class="study-tasks-list-heading">
+                <h2>Your tasks</h2>
+                <span>@tasks.Count @(tasks.Count == 1 ? "task" : "tasks")</span>
+            </div>
+
+            @foreach (var task in tasks)
             {
-                <div class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h5 class="mb-1">@task.Title</h5>
-
-                        <small class="text-muted">
-                            Due: @task.DueDate.ToString("dd.MM.yyyy HH:mm")
-                        </small>
-
-                        <div class="mt-2">
-                            @if (task.IsCompleted)
-                            {
-                                <span class="badge bg-success">Completed</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">Pending</span>
-                            }
-                        </div>
+                <article class="study-task-row @(task.IsCompleted ? "study-task-completed" : "")">
+                    <div class="study-task-indicator">
+                        @if (task.IsCompleted)
+                        {
+                            <span class="study-task-check">✓</span>
+                        }
+                        else
+                        {
+                            <span class="study-task-number"></span>
+                        }
                     </div>
 
-                    <div class="d-flex gap-2 align-items-center">
+                    <div class="study-task-content">
+                        <h3>@task.Title</h3>
+
+                        <p class="study-task-due">
+                            <span class="study-task-due-label">DUE DATE</span>
+                            @task.DueDate.ToString("dd.MM.yyyy · HH:mm")
+                        </p>
+                    </div>
+
+                    <div class="study-task-status">
+                        @if (task.IsCompleted)
+                        {
+                            <span class="study-task-badge study-task-badge-done">
+                                Completed
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="study-task-badge study-task-badge-pending">
+                                Pending
+                            </span>
+                        }
+                    </div>
+
+                    <div class="study-task-actions">
                         <form asp-controller="StudyTask"
                               asp-action="SetCompleted"
                               asp-route-subjectId="@task.SubjectId"
@@ -64,27 +131,27 @@
                                    value="@(!task.IsCompleted ? "true" : "false")" />
 
                             <button type="submit"
-                                    class="btn btn-sm @(task.IsCompleted ? "btn-outline-warning" : "btn-outline-success")">
-                                @(task.IsCompleted ? "Mark as Pending" : "Mark as Completed")
+                                    class="study-task-action @(task.IsCompleted ? "study-task-action-pending" : "study-task-action-complete")">
+                                @(task.IsCompleted ? "Mark pending" : "Complete")
                             </button>
                         </form>
 
                         <a asp-controller="StudyTask"
                            asp-action="Edit"
                            asp-route-taskId="@task.Id"
-                           class="btn btn-outline-primary btn-sm">
+                           class="study-task-edit">
                             Edit
                         </a>
 
                         <a asp-controller="StudyTask"
                            asp-action="Delete"
                            asp-route-taskId="@task.Id"
-                           class="btn btn-outline-danger btn-sm">
+                           class="study-task-delete">
                             Delete
                         </a>
                     </div>
-                </div>
+                </article>
             }
-        </div>
+        </section>
     }
 </div>

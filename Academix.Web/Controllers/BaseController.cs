@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Academix.Web.Controllers
 {
@@ -6,7 +7,7 @@ namespace Academix.Web.Controllers
     {
         protected string? GetUserId()
         {
-            return User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

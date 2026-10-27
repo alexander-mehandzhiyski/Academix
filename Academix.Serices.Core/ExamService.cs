@@ -23,6 +23,11 @@ namespace Academix.Serices.Core
                 return false;
             }
 
+            if (model.ExamDate < DateTime.Now)
+            {
+                return false;
+            }
+
             Exam exam = new Exam
             {
                 Title = model.Title,

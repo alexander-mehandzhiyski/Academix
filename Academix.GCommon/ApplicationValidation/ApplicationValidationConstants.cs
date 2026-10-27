@@ -4,29 +4,52 @@
     {
         public static class Subject
         {
-            public const int SubjectNameMinLength = 2;
-            public const int SubjectNameMaxLength = 100;
-
-            public const int SubjectDescriptionMinLength = 5;
-            public const int SubjectDescriptionMaxLength = 500;
+            public const string SubjectRemovedSuccessfully = "Subject removed successfully!";
+            public const string SubjectAddedSuccessfully = "Subject added successfully!";
         }
+
         public static class StudyTask
         {
-            public const int StudyTaskTitleMinLength = 5;
-            public const int StudyTaskTitleMaxLength = 120;
-
-            public const int StudyTaskDescriptionMinLength = 5;
-            public const int StudyTaskDescriptionMaxLength = 500;
+            public const string StudyTaskFutureDateErrorMessage = "Date cannot be in the past.";
         }
+
         public static class Exam
         {
-            public const int ExamTitleMinLength = 5;
-            public const int ExamTitleMaxLength = 150;
+            public const string ExamFutureDateErrorMessage = "Exam date must be in the future.";
+        }
 
-            //public const int ExamGradeMinValue = 2;
-            //public const int ExamGradeMaxValue = 6;
+        public static class ErrorMessages
+        {
+            public const string UnexpectedError = "An unexpcted error occurred.";
+            public const string AccessDenied = "You do not have permission to do this action.";
+            public const string NotFound = "The requested item was not found.";
 
+            // Study Tasks //
+            public const string StudyTaskCreationFailed =
+                "Failed to create study task.";
 
+            public const string StudyTaskEditFailed =
+                "Failed to edit study task.";
+
+            public const string StudyTaskDeleteFailed =
+                "Failed to delete study task.";
+
+            // Exams //
+            public const string ExamCreationFailed =
+                "Unable to create exam for this subject.";
+
+            public const string ExamEditFailed =
+                "Unable to edit exam.";
+
+            public const string ExamDeleteFailed =
+                "Unable to delete exam.";
+
+            // Subjects //
+            public const string SubjectAddFailed =
+                "Unable to add subject.";
+
+            public const string SubjectRemoveFailed =
+                "Unable to remove subject.";
         }
     }
 }

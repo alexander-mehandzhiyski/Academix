@@ -1,6 +1,8 @@
 ﻿using Academix.Serices.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Academix.GCommon.ApplicationValidation.ApplicationValidationConstants.ErrorMessages;
+using static Academix.GCommon.ApplicationValidation.ApplicationValidationConstants.Subject;
 
 namespace Academix.Web.Controllers
 {
@@ -40,6 +42,7 @@ namespace Academix.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToMySubjects(int subjectId)
         {
             string? userId = GetUserId();
@@ -53,11 +56,11 @@ namespace Academix.Web.Controllers
 
             if(!isAdded)
             {
-                TempData["Message"] = "Subject not found or already added.";
+                TempData["Message"] = SubjectAddFailed;
             }
             else
             {
-                TempData["Message"] = "Subject added successfully!";
+                TempData["Message"] = SubjectAddedSuccessfully;
             }
 
             return RedirectToAction("MySubjects");
@@ -84,6 +87,7 @@ namespace Academix.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromMySubjects(int subjectId)
         {
             string? userId = GetUserId();
@@ -97,11 +101,11 @@ namespace Academix.Web.Controllers
 
             if(!isRemoved)
             {
-                TempData["Message"] = "Subject not found or not added.";
+                TempData["Message"] = SubjectRemoveFailed;
             }
             else
             {
-                TempData["Message"] = "Subject removed successfully!";
+                TempData["Message"] = SubjectRemovedSuccessfully;
             }
 
             return RedirectToAction("MySubjects");

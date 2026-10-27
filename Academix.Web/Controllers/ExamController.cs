@@ -2,6 +2,7 @@
 using Academix.Web.ViewModels.Exam;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Academix.GCommon.ApplicationValidation.ApplicationValidationConstants.ErrorMessages;
 
 namespace Academix.Web.Controllers
 {
@@ -42,6 +43,7 @@ namespace Academix.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ExamInputModel inputModel)
         {
             string? userId = GetUserId();
@@ -60,7 +62,7 @@ namespace Academix.Web.Controllers
 
             if (!result)
             {
-                ModelState.AddModelError(string.Empty, "Unable to create exam for this subject.");
+                ModelState.AddModelError(string.Empty, ExamCreationFailed);
 
                 return View(inputModel);
             }
@@ -122,6 +124,7 @@ namespace Academix.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int examId, ExamInputModel inputModel)
         {
             string? userId = GetUserId();
@@ -141,7 +144,7 @@ namespace Academix.Web.Controllers
 
             if (!result)
             {
-                ModelState.AddModelError(string.Empty, "Unable to edit exam.");
+                ModelState.AddModelError(string.Empty, ExamEditFailed);
                 ViewBag.ExamId = examId;
                 return View(inputModel);
             }
@@ -170,6 +173,7 @@ namespace Academix.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int examId)
         {
             string? userId = GetUserId();
@@ -190,7 +194,7 @@ namespace Academix.Web.Controllers
 
             if (!result)
             {
-                ModelState.AddModelError(string.Empty, "Unable to delete exam.");
+                ModelState.AddModelError(string.Empty, ExamDeleteFailed);
                 return View("Delete", exam);
             }
 

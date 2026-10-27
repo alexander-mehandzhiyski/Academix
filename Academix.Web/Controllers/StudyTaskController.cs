@@ -2,6 +2,7 @@
 using Academix.Web.ViewModels.StudyTask;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Academix.GCommon.ApplicationValidation.ApplicationValidationConstants.ErrorMessages;
 
 namespace Academix.Web.Controllers
 {
@@ -42,6 +43,7 @@ namespace Academix.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(StudyTaskInputModel inputModel)
         {
             if (!ModelState.IsValid)
@@ -67,7 +69,7 @@ namespace Academix.Web.Controllers
 
             if (!isCreated)
             {
-                ModelState.AddModelError(string.Empty, "Failed to create study task.");
+                ModelState.AddModelError(string.Empty, StudyTaskCreationFailed);
                 return View(inputModel);
             }
 
@@ -127,6 +129,7 @@ namespace Academix.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromQuery] int taskId, StudyTaskInputModel inputModel)
         {
             string? userId = GetUserId();
@@ -136,6 +139,11 @@ namespace Academix.Web.Controllers
                 return Unauthorized();
             }
 
+            if (!ModelState.IsValid)
+            {
+                return View(inputModel);
+            }
+
             bool hasAccess = await studyTaskService.UserHasAccessToSubjectAsync(inputModel.SubjectId, userId);
 
             if (!hasAccess)
@@ -143,16 +151,12 @@ namespace Academix.Web.Controllers
                 return NotFound();
             }
 
-            if (!ModelState.IsValid)
-            {
-                return View(inputModel);
-            }
 
             bool edited = await studyTaskService.EditStudyTaskAsync(taskId, inputModel, userId);
 
             if (!edited)
             {
-                ModelState.AddModelError(string.Empty, "Failed to edit study task.");
+                ModelState.AddModelError(string.Empty, StudyTaskEditFailed);
                 return View(inputModel);
             }
 
@@ -180,6 +184,7 @@ namespace Academix.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed([FromQuery] int taskId, [FromQuery] int subjectId)
         {
             string? userId = GetUserId();
@@ -200,13 +205,14 @@ namespace Academix.Web.Controllers
 
             if(!deleted)
             {
-                return BadRequest("Failed to delete study task.");
+                return BadRequest(StudyTaskDeleteFailed);
             }
 
             return RedirectToAction("TasksOfSubject", new { subjectId });
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetCompleted(int taskId, bool isCompleted, int subjectId)
         {
             string? userId = GetUserId();

@@ -4,40 +4,62 @@
     ViewData["Title"] = "Delete Study Task";
 }
 
-<div class="container py-5">
-    <div class="card shadow-sm border-0 mx-auto" style="max-width: 600px;">
-        <div class="card-body p-4">
-            <h1 class="fw-bold text-danger">Delete Study Task</h1>
+<div class="task-form-page task-delete-page">
+    <a asp-controller="StudyTask"
+       asp-action="TasksOfSubject"
+       asp-route-subjectId="@Model.SubjectId"
+       class="task-form-back">
+        ← Back to tasks
+    </a>
 
-            <p>Are you sure you want to delete this task?</p>
+    <div class="task-delete-card">
+        <div class="task-delete-icon">!</div>
 
-            <h4>@Model.Title</h4>
+        <span class="task-form-eyebrow">TASK MANAGEMENT</span>
+        <h1>Delete this task?</h1>
 
-            <p class="text-muted">
-                Subject: @Model.SubjectName
-            </p>
+        <p class="task-delete-intro">
+            Are you sure you want to delete this study task?
+            This action cannot be undone.
+        </p>
 
-            <p>
-                Due date: @Model.DueDate.ToString("dd.MM.yyyy HH:mm")
-            </p>
+        <div class="task-delete-details">
+            <span class="task-delete-label">TASK TITLE</span>
+            <h2>@Model.Title</h2>
 
-            <form asp-controller="StudyTask"
-                  asp-action="DeleteConfirmed"
-                  asp-route-taskId="@Model.Id"
-                  asp-route-subjectId="@Model.SubjectId"
-                  method="post">
+            <div class="task-delete-meta">
+                <div>
+                    <span class="task-delete-label">SUBJECT</span>
+                    <p>@Model.SubjectName</p>
+                </div>
 
-                <button type="submit" class="btn btn-danger">
-                    Confirm Delete
-                </button>
+                <div>
+                    <span class="task-delete-label">DUE DATE</span>
+                    <p>@Model.DueDate.ToString("dd.MM.yyyy HH:mm")</p>
+                </div>
+            </div>
+        </div>
 
+        <form asp-controller="StudyTask"
+              asp-action="DeleteConfirmed"
+              asp-route-taskId="@Model.Id"
+              asp-route-subjectId="@Model.SubjectId"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div class="task-delete-actions">
                 <a asp-controller="StudyTask"
                    asp-action="TasksOfSubject"
                    asp-route-subjectId="@Model.SubjectId"
-                   class="btn btn-outline-secondary">
+                   class="task-form-cancel">
                     Cancel
                 </a>
-            </form>
-        </div>
+
+                <button type="submit" class="task-delete-confirm">
+                    Delete task
+                </button>
+            </div>
+        </form>
     </div>
 </div>

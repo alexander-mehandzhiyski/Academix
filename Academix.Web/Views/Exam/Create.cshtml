@@ -30,15 +30,23 @@
             <span asp-validation-for="ExamDate" class="text-danger"></span>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Grade" class="form-label">Goal Grade (optional)</label>
+        <div class="task-form-field">
+            <label asp-for="Grade">Goal grade <span>(optional)</span></label>
+
             <input asp-for="Grade"
                    type="number"
                    min="2"
                    max="6"
                    step="0.01"
-                   class="form-control" />
-            <span asp-validation-for="Grade" class="text-danger"></span>
+                   class="task-form-input"
+                   placeholder="e.g. 5.50" />
+
+            <span asp-validation-for="Grade"
+                  class="task-form-error"></span>
+
+            <p class="exam-field-hint">
+                Set the grade you would like to achieve on this exam.
+            </p>
         </div>
 
         <button type="submit" class="btn btn-primary">

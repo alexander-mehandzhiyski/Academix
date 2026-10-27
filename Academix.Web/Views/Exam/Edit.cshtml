@@ -4,56 +4,95 @@
     ViewData["Title"] = "Edit Exam";
 }
 
-<div class="container py-5">
-    <h1 class="fw-bold mb-4">Edit Exam</h1>
+<div class="task-form-page">
+    <a asp-controller="Exam"
+       asp-action="ExamsOfSubject"
+       asp-route-subjectId="@Model.SubjectId"
+       class="task-form-back">
+        ← Back to exams
+    </a>
 
-    <form asp-controller="Exam"
-          asp-action="Edit"
-          asp-route-examId="@ViewBag.ExamId"
-          method="post">
+    <div class="task-form-header">
+        <span class="task-form-eyebrow">YOUR LEARNING</span>
+        <h1>Edit exam</h1>
+        <p>Update your exam schedule or adjust your goal grade.</p>
+    </div>
 
-        @Html.AntiForgeryToken()
-
-        <div asp-validation-summary="ModelOnly"
-             class="text-danger mb-3"></div>
-
-        <input type="hidden" asp-for="SubjectId" />
-
-        <div class="mb-3">
-            <label asp-for="Title" class="form-label">Exam Title</label>
-            <input asp-for="Title" class="form-control" />
-            <span asp-validation-for="Title" class="text-danger"></span>
+    <div class="task-form-card">
+        <div class="task-form-card-heading">
+            <span class="task-form-icon task-form-icon-edit">✎</span>
+            <div>
+                <h2>Exam details</h2>
+                <p>Make your changes below.</p>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="ExamDate" class="form-label">Exam Date</label>
-            <input asp-for="ExamDate"
-                   type="datetime-local"
-                   asp-format="{0:yyyy-MM-ddTHH:mm}"
-                   class="form-control" />
-            <span asp-validation-for="ExamDate" class="text-danger"></span>
-        </div>
+        <form asp-controller="Exam"
+              asp-action="Edit"
+              asp-route-examId="@ViewBag.ExamId"
+              method="post">
 
-        <div class="mb-3">
-            <label asp-for="Grade" class="form-label">Grade (optional)</label>
-            <input asp-for="Grade"
-                   type="number"
-                   min="2"
-                   max="6"
-                   step="0.01"
-                   class="form-control" />
-            <span asp-validation-for="Grade" class="text-danger"></span>
-        </div>
+            @Html.AntiForgeryToken()
 
-        <button type="submit" class="btn btn-primary">
-            Save Changes
-        </button>
+            <div asp-validation-summary="ModelOnly"
+                 class="task-form-validation"></div>
 
-        <a asp-controller="Exam"
-           asp-action="ExamsOfSubject"
-           asp-route-subjectId="@Model.SubjectId"
-           class="btn btn-secondary">
-            Cancel
-        </a>
-    </form>
+            <input type="hidden" asp-for="SubjectId" />
+
+            <div class="task-form-field">
+                <label asp-for="Title">Exam title</label>
+                <input asp-for="Title"
+                       class="task-form-input"
+                       placeholder="Enter exam title" />
+                <span asp-validation-for="Title"
+                      class="task-form-error"></span>
+            </div>
+
+            <div class="task-form-field">
+                <label asp-for="ExamDate">Exam date and time</label>
+                <input asp-for="ExamDate"
+                       type="datetime-local"
+                       asp-format="{0:yyyy-MM-ddTHH:mm}"
+                       class="task-form-input" />
+                <span asp-validation-for="ExamDate"
+                      class="task-form-error"></span>
+            </div>
+
+            <div class="task-form-field">
+                <label asp-for="Grade">Goal grade <span>(optional)</span></label>
+
+                <input asp-for="Grade"
+                       type="number"
+                       min="2"
+                       max="6"
+                       step="0.01"
+                       class="task-form-input"
+                       placeholder="e.g. 5.50" />
+
+                <span asp-validation-for="Grade"
+                      class="task-form-error"></span>
+
+                <p class="exam-field-hint">
+                    Set the grade you would like to achieve on this exam.
+                </p>
+            </div>
+
+            <div class="task-form-actions">
+                <a asp-controller="Exam"
+                   asp-action="ExamsOfSubject"
+                   asp-route-subjectId="@Model.SubjectId"
+                   class="task-form-cancel">
+                    Cancel
+                </a>
+
+                <button type="submit" class="task-form-submit">
+                    Save changes <span>→</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

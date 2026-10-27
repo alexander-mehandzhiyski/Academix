@@ -129,6 +129,30 @@ namespace Academix.Web.Data.Migrations
                             Id = 2,
                             Description = "World and regional history",
                             Name = "History"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Study Earth’s lands, features, inhabitants, and natural or human phenomena",
+                            Name = "Geography"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Study life and living organisms, including their structure, function, growth, origin, evolution, and distribution.",
+                            Name = "Biology"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "National Revival literature",
+                            Name = "Literature"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Organic and inorganic chemistry",
+                            Name = "Chemistry"
                         });
                 });
 

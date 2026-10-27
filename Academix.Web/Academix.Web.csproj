@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Academix.Data.Models\Academix.Data.Models.csproj" />
+    <ProjectReference Include="..\Academix.Data\Academix.Data.csproj" />
     <ProjectReference Include="..\Academix.GCommon\Academix.GCommon.csproj" />
     <ProjectReference Include="..\Academix.Serices.Core\Academix.Serices.Core.csproj" />
     <ProjectReference Include="..\Academix.Web.ViewModels\Academix.Web.ViewModels.csproj" />
